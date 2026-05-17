@@ -4,7 +4,6 @@ namespace EquillibriumERP.Sales.Domain.Entities;
 
 public class Product
 {
-
     public Guid Id { get; private set; }
 
     public string ProductCode { get; private set; } = null!;
@@ -23,6 +22,9 @@ public class Product
 
     public bool IsActive { get; private set; }
 
+    // ❗ DB has it, so entity MUST have it for alignment
+    public string TenantId { get; private set; } = null!;
+
     public ProductCategory? Category { get; private set; }
 
     private Product() { }
@@ -39,39 +41,28 @@ public class Product
         Id = Guid.NewGuid();
 
         ProductCode = productCode;
-
         Name = name;
-
         ProductType = productType;
-
         SellingPrice = sellingPrice;
-
         CostPrice = costPrice;
-
         ProductCategoryId = productCategoryId;
-
         Description = description ?? string.Empty;
 
         IsActive = true;
     }
 
-    public void Deactivate()
-    {
-        IsActive = false;
-    }
+    public void Deactivate() => IsActive = false;
 
-    public void Activate()
-    {
-        IsActive = true;
-    }
+    public void Activate() => IsActive = true;
+
     public void Update(
-    string productCode,
-    string name,
-    ProductType productType,
-    decimal sellingPrice,
-    decimal costPrice,
-    Guid? productCategoryId,
-    string? description)
+        string productCode,
+        string name,
+        ProductType productType,
+        decimal sellingPrice,
+        decimal costPrice,
+        Guid? productCategoryId,
+        string? description)
     {
         ProductCode = productCode;
         Name = name;

@@ -8,6 +8,8 @@ public class CreateProductDto
 
     public string Name { get; set; } = default!;
 
+    public string? Description { get; set; }
+
     public ProductType ProductType { get; set; }
 
     public decimal SellingPrice { get; set; }
@@ -15,6 +17,4 @@ public class CreateProductDto
     public decimal CostPrice { get; set; }
 
     public Guid? ProductCategoryId { get; set; }
-
-    public string? Description { get; set; }
 }

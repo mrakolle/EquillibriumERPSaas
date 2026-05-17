@@ -7,6 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\EquillibriumERP.Sales.Domain\EquillibriumERP.Sales.Domain.csproj" />
+    <ProjectReference Include="..\EquillibriumERP.Abstractions\EquillibriumERP.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

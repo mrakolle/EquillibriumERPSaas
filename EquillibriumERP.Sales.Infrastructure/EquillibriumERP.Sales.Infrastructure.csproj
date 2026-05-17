@@ -14,6 +14,7 @@
     <ProjectReference Include="..\EquillibriumERP.Sales.Application\EquillibriumERP.Sales.Application.csproj" />
     <ProjectReference Include="..\EquillibriumERP.Sales.Domain\EquillibriumERP.Sales.Domain.csproj" />
     <ProjectReference Include="..\EquillibriumERP.Infrastructure\EquillibriumERP.Infrastructure.csproj" />
+    <ProjectReference Include="..\EquillibriumERP.Abstractions\EquillibriumERP.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

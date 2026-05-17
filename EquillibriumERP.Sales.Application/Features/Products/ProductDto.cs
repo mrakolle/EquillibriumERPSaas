@@ -6,9 +6,11 @@ public class ProductDto
 {
     public Guid Id { get; set; }
 
+    public string ProductCode { get; set; } = default!;
+
     public string Name { get; set; } = default!;
 
-    public string ProductCode { get; set; } = default!;
+    public string Description { get; set; } = default!;
 
     public ProductType ProductType { get; set; }
 
@@ -18,5 +20,5 @@ public class ProductDto
 
     public Guid? ProductCategoryId { get; set; }
 
-    public string? ProductCategoryName { get; set; }
+    public bool IsActive { get; set; }
 }
