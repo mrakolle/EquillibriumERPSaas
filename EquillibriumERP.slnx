@@ -21,5 +21,4 @@
   <Project Path="EquillibriumERP.Sales.Domain/EquillibriumERP.Sales.Domain.csproj" />
   <Project Path="EquillibriumERP.Sales.Infrastructure/EquillibriumERP.Sales.Infrastructure.csproj" />
   <Project Path="EquillibriumERP.SharedKernel/EquillibriumERP.SharedKernel.csproj" />
-  <Project Path="EquillibriumERP.Shell/EquillibriumERP.Shell.csproj" />
 </Solution>

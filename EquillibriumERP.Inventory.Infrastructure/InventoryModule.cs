@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EquillibriumERP.Manufacturing.Infrastructure;
+namespace EquillibriumERP.Inventory.Infrastructure;
 
-public class ManufacturingModule : IModule
+public class InventoryModule : IModule
 {
-    public string Name => "Manufacturing";
+    public string Name => "Inventory";
 
     public void RegisterServices(IServiceCollection services, IConfiguration config)
     {

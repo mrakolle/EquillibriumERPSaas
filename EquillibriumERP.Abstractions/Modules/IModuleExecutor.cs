@@ -4,9 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EquillibriumERP.Abstractions.Modules;
 
-public interface IModuleRegistrar
+public interface IModuleExecutor
 {
-    void RegisterModules(IServiceCollection services, IConfiguration configuration);
-
-    void MapEndpoints(WebApplication app);
+    void RegisterModules(IServiceCollection services, IConfiguration config);
+    void MapModules(WebApplication app);
 }
