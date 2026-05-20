@@ -2,11 +2,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using EquillibriumERP.Abstractions.Modules;
+using EquillibriumERP.Abstractions.Persistence;
 using EquillibriumERP.Abstractions.MultiTenancy;
+using System.Data;
 
 namespace EquillibriumERP.Infrastructure.Persistence;
 
-public class TenantDbContext : DbContext
+public class TenantDbContext : DbContext, ITenantDbContext
 {
     private readonly IModuleAssemblyProvider _moduleAssemblyProvider;
     private readonly ITenantResolver _tenantResolver;
@@ -36,25 +38,9 @@ public class TenantDbContext : DbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        Console.WriteLine("Building model...");
+         Console.WriteLine($"SCHEMA = {Schema}");
         base.OnModelCreating(modelBuilder);
-
-        var assemblies = _moduleAssemblyProvider.GetAssemblies();
-
-        if (assemblies == null)
-            return;
-
-        foreach (var assembly in assemblies)
-        {
-            modelBuilder.ApplyConfigurationsFromAssembly(assembly);
-        }
-    }
-}
-
-   /* protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
-
-        // ❗ DO NOT hardcode schema here anymore
         modelBuilder.HasDefaultSchema(Schema);
 
         var assemblies = _moduleAssemblyProvider.GetAssemblies();
@@ -67,17 +53,17 @@ public class TenantDbContext : DbContext
             modelBuilder.ApplyConfigurationsFromAssembly(assembly);
         }
     }
-}*/
-internal class TenantModelCacheKeyFactory : IModelCacheKeyFactory
-{
-    public object Create(DbContext context, bool designTime)
+    public void EnsureTenantSchema()
     {
-        var tenantContext = (TenantDbContext)context;
+        var conn = Database.GetDbConnection();
 
-        return (
-            context.GetType(),
-            tenantContext.Schema,
-            designTime
-        );
+        if (conn.State != ConnectionState.Open)
+            conn.Open();
+
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = $"SET search_path TO \"{Schema}\"";
+        cmd.ExecuteNonQuery();
     }
 }
+
+ 

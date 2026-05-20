@@ -23,7 +23,7 @@ public class Product
     public bool IsActive { get; private set; }
 
     // ❗ DB has it, so entity MUST have it for alignment
-    public string TenantId { get; private set; } = null!;
+   // public string TenantId { get; private set; } = null!;
 
     public ProductCategory? Category { get; private set; }
 

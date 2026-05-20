@@ -10,7 +10,14 @@ public class ModuleAssemblyProvider : IModuleAssemblyProvider
         return AppDomain.CurrentDomain.GetAssemblies()
             .Where(a =>
                 a.FullName != null &&
-                a.FullName.StartsWith("EquillibriumERP."));
+                a.FullName.Contains(".Infrastructure") &&
+                !a.FullName.Contains("EquillibriumERP.Infrastructure"));
+
+        /// Old implemntation 
+        /*return AppDomain.CurrentDomain.GetAssemblies()
+            .Where(a =>
+                a.FullName != null &&
+                a.FullName.StartsWith("EquillibriumERP."));*/
     }
 }
 

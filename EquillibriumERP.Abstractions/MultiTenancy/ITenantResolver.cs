@@ -5,4 +5,5 @@ public interface ITenantResolver
     void SetTenant(string tenantId);
     string GetSchema();
     string GetTenantId();
+    
 }

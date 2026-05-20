@@ -5,10 +5,13 @@ using EquillibriumERP.Abstractions.Modules;
 using EquillibriumERP.Sales.Infrastructure;
 using EquillibriumERP.Inventory.Infrastructure;
 using EquillibriumERP.Manufacturing.Infrastructure;
+//using Microsoft.OpenApi.Models;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi();
+//builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -32,7 +35,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    //app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
@@ -42,6 +45,13 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapTenantOnboardingEndpoints();
+/*foreach (var m in modules)
+{
+    if (m is SalesModule)
+        continue;
+
+    m.MapEndpoints(app);
+}*/
 
 foreach (var m in modules)
 {
@@ -51,55 +61,3 @@ foreach (var m in modules)
 app.MapControllers();
 
 app.Run();
-
-
-/*using EquillibriumERP.Api.Endpoints;
-using EquillibriumERP.Infrastructure.DependencyInjection;
-using EquillibriumERP.Api.Middleware;
-
-var builder = WebApplication.CreateBuilder(args);
-
-//
-// =====================================================
-// SERVICES
-// =====================================================
-//
-
-builder.Services.AddOpenApi();
-
-// ✅ Swagger services
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddControllers();
-
-var app = builder.Build();
-
-//
-// =====================================================
-// PIPELINE
-// =====================================================
-//
-
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-
-    // ✅ Swagger UI
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-// middleware stays
-app.UseMiddleware<TenantMiddleware>();
-
-app.UseHttpsRedirection();
-app.UseAuthorization();
-
-// clean endpoint registration
-app.MapTenantOnboardingEndpoints();
-
-app.MapControllers();
-
-app.Run();*/

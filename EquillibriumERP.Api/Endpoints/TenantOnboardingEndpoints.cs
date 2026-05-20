@@ -2,6 +2,7 @@ using EquillibriumERP.Infrastructure.Persistence;
 using EquillibriumERP.Infrastructure.Persistence.Entities;
 using EquillibriumERP.Infrastructure.MultiTenancy;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EquillibriumERP.Api.Endpoints;
 
@@ -9,6 +10,7 @@ public static class TenantOnboardingEndpoints
 {
     public static IEndpointRouteBuilder MapTenantOnboardingEndpoints(this IEndpointRouteBuilder app)
     {
+        
         app.MapPost("/tenants/onboard", async (
             MasterDbContext masterDb,
             TenantProvisioningService provisioning,
@@ -44,7 +46,8 @@ public static class TenantOnboardingEndpoints
                 Message = "Tenant created + schema provisioned"
             });
         });
-
+            
         return app;
     }
 }
+public sealed record CreateTenantRequest(string TenantName);

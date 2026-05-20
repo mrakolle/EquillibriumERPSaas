@@ -3,9 +3,11 @@ using EquillibriumERP.Infrastructure.MultiTenancy;
 using EquillibriumERP.Infrastructure.Modules;
 using EquillibriumERP.Abstractions.MultiTenancy;
 using EquillibriumERP.Abstractions.Modules;
+using EquillibriumERP.Abstractions.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace EquillibriumERP.Infrastructure.DependencyInjection;
 
@@ -49,6 +51,8 @@ public static class InfrastructureServiceRegistration
             optionsBuilder.UseNpgsql(
                 config.GetConnectionString("TenantDatabase"));
 
+            optionsBuilder.ReplaceService<IModelCacheKeyFactory, TenantModelCacheKeyFactory>();
+
             var tenantResolver = provider.GetRequiredService<ITenantResolver>();
 
             return new TenantDbContext(
@@ -56,6 +60,8 @@ public static class InfrastructureServiceRegistration
                 moduleProvider,
                 tenantResolver);
         });
+        services.AddScoped<ITenantDbContext>(provider =>
+            provider.GetRequiredService<TenantDbContext>());
 
         return services;
     }
