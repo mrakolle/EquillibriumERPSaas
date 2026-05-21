@@ -17,6 +17,601 @@ namespace EquillibriumERP.Infrastructure.Persistence.Migrations.Tenant
         {
 #pragma warning disable 612, 618
             modelBuilder
+                //.HasDefaultSchema("public")
+                .HasAnnotation("ProductVersion", "10.0.7")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.Customer", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid");
+
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<Guid?>("CustomerCategoryId")
+                    .HasColumnType("uuid");
+
+                b.Property<string>("CustomerCode")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("character varying(50)");
+
+                b.Property<string>("Email")
+                    .IsRequired()
+                    .HasMaxLength(150)
+                    .HasColumnType("character varying(150)");
+
+                b.Property<bool>("IsActive")
+                    .HasColumnType("boolean");
+
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .HasColumnType("character varying(200)");
+
+                b.Property<string>("PhoneNumber")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("character varying(50)");
+
+                b.HasKey("Id");
+
+                b.HasIndex("CustomerCategoryId");
+
+                b.HasIndex("CustomerCode")
+                    .IsUnique();
+
+                b.ToTable("Customers", "public");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.CustomerAddress", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid");
+
+                b.Property<string>("AddressLine1")
+                    .IsRequired()
+                    .HasMaxLength(250)
+                    .HasColumnType("character varying(250)");
+
+                b.Property<string>("AddressLine2")
+                    .HasColumnType("text");
+
+                b.Property<string>("City")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("character varying(100)");
+
+                b.Property<string>("Country")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("character varying(100)");
+
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<Guid>("CustomerId")
+                    .HasColumnType("uuid");
+
+                b.Property<bool>("IsPrimary")
+                    .HasColumnType("boolean");
+
+                b.Property<string>("PostalCode")
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .HasColumnType("character varying(20)");
+
+                b.Property<string>("Province")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("character varying(100)");
+
+                b.HasKey("Id");
+
+                b.HasIndex("CustomerId");
+
+                b.ToTable("CustomerAddresses", "public");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.CustomerCategory", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid");
+
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<string>("Description")
+                    .HasColumnType("text");
+
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("character varying(100)");
+
+                b.HasKey("Id");
+
+                b.ToTable("CustomerCategories", "public");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.CustomerContact", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid");
+
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<Guid>("CustomerId")
+                    .HasColumnType("uuid");
+
+                b.Property<string>("Email")
+                    .IsRequired()
+                    .HasMaxLength(150)
+                    .HasColumnType("character varying(150)");
+
+                b.Property<string>("FirstName")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("character varying(100)");
+
+                b.Property<bool>("IsPrimary")
+                    .HasColumnType("boolean");
+
+                b.Property<string>("LastName")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("character varying(100)");
+
+                b.Property<string>("PhoneNumber")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("character varying(50)");
+
+                b.Property<string>("Position")
+                    .HasColumnType("text");
+
+                b.HasKey("Id");
+
+                b.HasIndex("CustomerId");
+
+                b.ToTable("CustomerContacts", "public");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.CustomerCreditProfile", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid");
+
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<decimal>("CreditLimit")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.Property<decimal>("CurrentBalance")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.Property<Guid>("CustomerId")
+                    .HasColumnType("uuid");
+
+                b.Property<bool>("IsOnHold")
+                    .HasColumnType("boolean");
+
+                b.Property<int>("PaymentTermsInDays")
+                    .HasColumnType("integer");
+
+                b.HasKey("Id");
+
+                b.HasIndex("CustomerId")
+                    .IsUnique();
+
+                b.ToTable("CustomerCreditProfiles", "public");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.Estimate", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid");
+
+                b.Property<Guid>("CustomerId")
+                    .HasColumnType("uuid");
+
+                b.Property<DateTime>("EstimateDateUtc")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<string>("EstimateNumber")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("character varying(50)");
+
+                b.Property<DateTime>("ExpiryDateUtc")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<string>("Notes")
+                    .IsRequired()
+                    .HasMaxLength(2000)
+                    .HasColumnType("character varying(2000)");
+
+                b.Property<int>("Status")
+                    .HasColumnType("integer");
+
+                b.Property<decimal>("Subtotal")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.Property<decimal>("TaxAmount")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.Property<decimal>("TotalAmount")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.HasKey("Id");
+
+                b.HasIndex("EstimateNumber")
+                    .IsUnique();
+
+                b.ToTable("Estimates", "public");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.EstimateItem", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid");
+
+                b.Property<string>("Description")
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .HasColumnType("character varying(500)");
+
+                b.Property<Guid>("EstimateId")
+                    .HasColumnType("uuid");
+
+                b.Property<decimal>("LineSubtotal")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.Property<decimal>("LineTotal")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.Property<Guid>("ProductId")
+                    .HasColumnType("uuid");
+
+                b.Property<decimal>("Quantity")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.Property<decimal>("TaxAmount")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.Property<decimal>("TaxRate")
+                    .HasPrecision(5, 2)
+                    .HasColumnType("numeric(5,2)");
+
+                b.Property<decimal>("UnitPrice")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.HasKey("Id");
+
+                b.HasIndex("EstimateId");
+
+                b.ToTable("EstimateItems", "public");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.Invoice", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid");
+
+                b.Property<Guid>("CustomerId")
+                    .HasColumnType("uuid");
+
+                b.Property<DateTime>("DueDateUtc")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<Guid?>("EstimateId")
+                    .HasColumnType("uuid");
+
+                b.Property<DateTime>("InvoiceDateUtc")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<string>("InvoiceNumber")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("character varying(50)");
+
+                b.Property<string>("Notes")
+                    .IsRequired()
+                    .HasMaxLength(2000)
+                    .HasColumnType("character varying(2000)");
+
+                b.Property<decimal>("PaidAmount")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.Property<int>("Status")
+                    .HasColumnType("integer");
+
+                b.Property<decimal>("Subtotal")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.Property<decimal>("TaxAmount")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.Property<decimal>("TotalAmount")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.HasKey("Id");
+
+                b.HasIndex("InvoiceNumber")
+                    .IsUnique();
+
+                b.ToTable("Invoices", "public");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.InvoiceItem", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid");
+
+                b.Property<string>("Description")
+                    .IsRequired()
+                    .HasMaxLength(500)
+                    .HasColumnType("character varying(500)");
+
+                b.Property<Guid>("InvoiceId")
+                    .HasColumnType("uuid");
+
+                b.Property<decimal>("LineSubtotal")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.Property<decimal>("LineTotal")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.Property<Guid>("ProductId")
+                    .HasColumnType("uuid");
+
+                b.Property<decimal>("Quantity")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.Property<decimal>("TaxAmount")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.Property<decimal>("TaxRate")
+                    .HasPrecision(5, 2)
+                    .HasColumnType("numeric(5,2)");
+
+                b.Property<decimal>("UnitPrice")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.HasKey("Id");
+
+                b.HasIndex("InvoiceId");
+
+                b.ToTable("InvoiceItems", "public");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.Product", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid");
+
+                b.Property<decimal>("CostPrice")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.Property<string>("Description")
+                    .IsRequired()
+                    .HasMaxLength(2000)
+                    .HasColumnType("character varying(2000)");
+
+                b.Property<bool>("IsActive")
+                    .HasColumnType("boolean");
+
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .HasColumnType("character varying(200)");
+
+                b.Property<Guid?>("ProductCategoryId")
+                    .HasColumnType("uuid");
+
+                b.Property<string>("ProductCode")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("character varying(50)");
+
+                b.Property<int>("ProductType")
+                    .HasColumnType("integer");
+
+                b.Property<decimal>("SellingPrice")
+                    .HasPrecision(18, 2)
+                    .HasColumnType("numeric(18,2)");
+
+                b.HasKey("Id");
+
+                b.HasIndex("ProductCategoryId");
+
+                b.HasIndex("ProductCode")
+                    .IsUnique();
+
+                b.ToTable("Products", "public");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.ProductCategory", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid");
+
+                b.Property<string>("Description")
+                    .IsRequired()
+                    .HasMaxLength(1000)
+                    .HasColumnType("character varying(1000)");
+
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasMaxLength(150)
+                    .HasColumnType("character varying(150)");
+
+                b.HasKey("Id");
+
+                b.ToTable("ProductCategories", "public");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.Customer", b =>
+            {
+                b.HasOne("EquillibriumERP.Sales.Domain.Entities.CustomerCategory", "CustomerCategory")
+                    .WithMany("Customers")
+                    .HasForeignKey("CustomerCategoryId")
+                    .OnDelete(DeleteBehavior.SetNull);
+
+                b.Navigation("CustomerCategory");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.CustomerAddress", b =>
+            {
+                b.HasOne("EquillibriumERP.Sales.Domain.Entities.Customer", "Customer")
+                    .WithMany("Addresses")
+                    .HasForeignKey("CustomerId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("Customer");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.CustomerContact", b =>
+            {
+                b.HasOne("EquillibriumERP.Sales.Domain.Entities.Customer", "Customer")
+                    .WithMany("Contacts")
+                    .HasForeignKey("CustomerId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("Customer");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.CustomerCreditProfile", b =>
+            {
+                b.HasOne("EquillibriumERP.Sales.Domain.Entities.Customer", "Customer")
+                    .WithOne("CreditProfile")
+                    .HasForeignKey("EquillibriumERP.Sales.Domain.Entities.CustomerCreditProfile", "CustomerId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("Customer");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.EstimateItem", b =>
+            {
+                b.HasOne("EquillibriumERP.Sales.Domain.Entities.Estimate", null)
+                    .WithMany("Items")
+                    .HasForeignKey("EstimateId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.InvoiceItem", b =>
+            {
+                b.HasOne("EquillibriumERP.Sales.Domain.Entities.Invoice", null)
+                    .WithMany("Items")
+                    .HasForeignKey("InvoiceId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.Product", b =>
+            {
+                b.HasOne("EquillibriumERP.Sales.Domain.Entities.ProductCategory", "Category")
+                    .WithMany("Products")
+                    .HasForeignKey("ProductCategoryId")
+                    .OnDelete(DeleteBehavior.SetNull);
+
+                b.Navigation("Category");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.Customer", b =>
+            {
+                b.Navigation("Addresses");
+
+                b.Navigation("Contacts");
+
+                b.Navigation("CreditProfile");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.CustomerCategory", b =>
+            {
+                b.Navigation("Customers");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.Estimate", b =>
+            {
+                b.Navigation("Items");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.Invoice", b =>
+            {
+                b.Navigation("Items");
+            });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.ProductCategory", b =>
+            {
+                b.Navigation("Products");
+            });
+#pragma warning restore 612, 618
+        }
+    }
+}
+
+
+
+/*using System;
+using EquillibriumERP.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
+
+namespace EquillibriumERP.Infrastructure.Persistence.Migrations.Tenant
+{
+    [DbContext(typeof(TenantDbContext))]
+    partial class TenantDbContextModelSnapshot : ModelSnapshot
+    {
+        protected override void BuildModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasDefaultSchema("public")
                 .HasAnnotation("ProductVersion", "10.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -64,7 +659,7 @@ namespace EquillibriumERP.Infrastructure.Persistence.Migrations.Tenant
                     b.HasIndex("CustomerCode")
                         .IsUnique();
 
-                    b.ToTable("Customers", (string)null);
+                    b.ToTable("Customers", "public");
                 });
 
             modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.CustomerAddress", b =>
@@ -114,7 +709,7 @@ namespace EquillibriumERP.Infrastructure.Persistence.Migrations.Tenant
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("CustomerAddresses", (string)null);
+                    b.ToTable("CustomerAddresses", "public");
                 });
 
             modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.CustomerCategory", b =>
@@ -136,7 +731,7 @@ namespace EquillibriumERP.Infrastructure.Persistence.Migrations.Tenant
 
                     b.HasKey("Id");
 
-                    b.ToTable("CustomerCategories", (string)null);
+                    b.ToTable("CustomerCategories", "public");
                 });
 
             modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.CustomerContact", b =>
@@ -181,7 +776,7 @@ namespace EquillibriumERP.Infrastructure.Persistence.Migrations.Tenant
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("CustomerContacts", (string)null);
+                    b.ToTable("CustomerContacts", "public");
                 });
 
             modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.CustomerCreditProfile", b =>
@@ -215,7 +810,7 @@ namespace EquillibriumERP.Infrastructure.Persistence.Migrations.Tenant
                     b.HasIndex("CustomerId")
                         .IsUnique();
 
-                    b.ToTable("CustomerCreditProfiles", (string)null);
+                    b.ToTable("CustomerCreditProfiles", "public");
                 });
 
             modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.Estimate", b =>
@@ -263,7 +858,7 @@ namespace EquillibriumERP.Infrastructure.Persistence.Migrations.Tenant
                     b.HasIndex("EstimateNumber")
                         .IsUnique();
 
-                    b.ToTable("Estimates", (string)null);
+                    b.ToTable("Estimates", "public");
                 });
 
             modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.EstimateItem", b =>
@@ -311,7 +906,27 @@ namespace EquillibriumERP.Infrastructure.Persistence.Migrations.Tenant
 
                     b.HasIndex("EstimateId");
 
-                    b.ToTable("EstimateItems", (string)null);
+                    b.ToTable("EstimateItems", "public");
+                });
+
+            modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.EstimateSequence", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<long>("LastNumber")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Year")
+                        .IsUnique();
+
+                    b.ToTable("EstimateSequences", "public");
                 });
 
             modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.Invoice", b =>
@@ -366,7 +981,7 @@ namespace EquillibriumERP.Infrastructure.Persistence.Migrations.Tenant
                     b.HasIndex("InvoiceNumber")
                         .IsUnique();
 
-                    b.ToTable("Invoices", (string)null);
+                    b.ToTable("Invoices", "public");
                 });
 
             modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.InvoiceItem", b =>
@@ -414,7 +1029,7 @@ namespace EquillibriumERP.Infrastructure.Persistence.Migrations.Tenant
 
                     b.HasIndex("InvoiceId");
 
-                    b.ToTable("InvoiceItems", (string)null);
+                    b.ToTable("InvoiceItems", "public");
                 });
 
             modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.Product", b =>
@@ -462,7 +1077,7 @@ namespace EquillibriumERP.Infrastructure.Persistence.Migrations.Tenant
                     b.HasIndex("ProductCode")
                         .IsUnique();
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products", "public");
                 });
 
             modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.ProductCategory", b =>
@@ -483,7 +1098,7 @@ namespace EquillibriumERP.Infrastructure.Persistence.Migrations.Tenant
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductCategories", (string)null);
+                    b.ToTable("ProductCategories", "public");
                 });
 
             modelBuilder.Entity("EquillibriumERP.Sales.Domain.Entities.Customer", b =>
@@ -588,4 +1203,4 @@ namespace EquillibriumERP.Infrastructure.Persistence.Migrations.Tenant
 #pragma warning restore 612, 618
         }
     }
-}
+}*/

@@ -46,6 +46,10 @@ public class EstimateItem
         Calculate();
     }
 
+    internal void AssignToEstimate(Guid estimateId)
+    {
+        EstimateId = estimateId;
+    }
     private void Calculate()
     {
         LineSubtotal = Quantity * UnitPrice;

@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Reflection;
+using Scrutor;
 
 namespace EquillibriumERP.Infrastructure.DependencyInjection;
 
@@ -18,7 +20,17 @@ public static class InfrastructureServiceRegistration
         IConfiguration configuration)
     {
         // =====================================================
-        // MODULE DISCOVERY (CRITICAL FOR EF CORE)
+        // MODULE DISCOVERY (CRITICAL FOR MODULE SYSTEM)
+        // =====================================================
+        services.Scan(scan => scan
+            .FromApplicationDependencies()
+            .AddClasses(c => c.AssignableTo<IModule>())
+            .AsImplementedInterfaces()
+            .AsSelf()
+            .WithSingletonLifetime());
+
+        // =====================================================
+        // MODULE ASSEMBLY PROVIDER (EF CORE)
         // =====================================================
         services.AddSingleton<IModuleAssemblyProvider, ModuleAssemblyProvider>();
 
@@ -27,8 +39,7 @@ public static class InfrastructureServiceRegistration
         // =====================================================
         services.AddDbContext<MasterDbContext>(options =>
         {
-            options.UseNpgsql(
-                configuration.GetConnectionString("MasterDatabase"));
+            options.UseNpgsql(configuration.GetConnectionString("MasterDatabase"));
         });
 
         // =====================================================
@@ -38,6 +49,9 @@ public static class InfrastructureServiceRegistration
         services.AddScoped<TenantProvisioningService>();
         services.AddScoped<TenantSchemaMigrator>();
 
+        // IMPORTANT: keep ONLY ONE registration (remove duplicate from Program.cs later)
+        services.AddScoped<ITenantSession, TenantSession>();
+
         // =====================================================
         // TENANT DB (MODULE-DRIVEN EF CORE)
         // =====================================================
@@ -45,6 +59,7 @@ public static class InfrastructureServiceRegistration
         {
             var config = provider.GetRequiredService<IConfiguration>();
             var moduleProvider = provider.GetRequiredService<IModuleAssemblyProvider>();
+            var tenantResolver = provider.GetRequiredService<ITenantResolver>();
 
             var optionsBuilder = new DbContextOptionsBuilder<TenantDbContext>();
 
@@ -53,13 +68,12 @@ public static class InfrastructureServiceRegistration
 
             optionsBuilder.ReplaceService<IModelCacheKeyFactory, TenantModelCacheKeyFactory>();
 
-            var tenantResolver = provider.GetRequiredService<ITenantResolver>();
-
             return new TenantDbContext(
                 optionsBuilder.Options,
                 moduleProvider,
                 tenantResolver);
         });
+
         services.AddScoped<ITenantDbContext>(provider =>
             provider.GetRequiredService<TenantDbContext>());
 

@@ -52,6 +52,7 @@ public class TenantDbContext : DbContext, ITenantDbContext
         {
             modelBuilder.ApplyConfigurationsFromAssembly(assembly);
         }
+       
     }
     public void EnsureTenantSchema()
     {

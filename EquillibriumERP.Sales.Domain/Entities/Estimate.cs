@@ -24,9 +24,7 @@ public class Estimate
 
     public string Notes { get; private set; } = string.Empty;
 
-    // Navigation
-    public ICollection<EstimateItem> Items { get; private set; }
-        = new List<EstimateItem>();
+    public ICollection<EstimateItem> Items { get; private set; } = new List<EstimateItem>();
 
     private Estimate() { }
 
@@ -40,51 +38,59 @@ public class Estimate
         Id = Guid.NewGuid();
 
         EstimateNumber = estimateNumber;
-
         CustomerId = customerId;
-
         EstimateDateUtc = estimateDateUtc;
-
         ExpiryDateUtc = expiryDateUtc;
 
         Status = EstimateStatus.Draft;
-
         Notes = notes ?? string.Empty;
     }
 
     public void AddItem(EstimateItem item)
     {
+        item.AssignToEstimate(Id);
         Items.Add(item);
-
         RecalculateTotals();
     }
 
-    public void MarkAsSent()
+    public void UpdateHeader(Guid customerId, DateTime expiryDateUtc, string? notes)
     {
-        Status = EstimateStatus.Sent;
+        CustomerId = customerId;
+        ExpiryDateUtc = expiryDateUtc;
+        Notes = notes ?? string.Empty;
     }
 
-    public void Approve()
+    public void ReplaceItems(List<EstimateItem> items)
     {
-        Status = EstimateStatus.Approved;
+        Items.Clear();
+
+        foreach (var item in items)
+        {
+            item.AssignToEstimate(Id);
+            Items.Add(item);
+        }
+
+        RecalculateTotals();
+    }
+    public static string GenerateEstimateNumber()
+    {
+        var date = DateTime.UtcNow;
+
+        return $"EST-{date:yyyyMMdd}-{Guid.NewGuid().ToString("N")[..6].ToUpper()}";
     }
 
-    public void Reject()
-    {
-        Status = EstimateStatus.Rejected;
-    }
+    public void MarkAsSent() => Status = EstimateStatus.Sent;
 
-    public void Convert()
-    {
-        Status = EstimateStatus.Converted;
-    }
+    public void Approve() => Status = EstimateStatus.Approved;
+
+    public void Reject() => Status = EstimateStatus.Rejected;
+
+    public void Convert() => Status = EstimateStatus.Converted;
 
     private void RecalculateTotals()
     {
         Subtotal = Items.Sum(x => x.LineSubtotal);
-
         TaxAmount = Items.Sum(x => x.TaxAmount);
-
         TotalAmount = Subtotal + TaxAmount;
     }
 }

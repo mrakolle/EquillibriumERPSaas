@@ -1,4 +1,79 @@
 using EquillibriumERP.Api.Middleware;
+using EquillibriumERP.Infrastructure.DependencyInjection;
+using EquillibriumERP.Abstractions.Modules;
+using EquillibriumERP.Abstractions.MultiTenancy;
+using EquillibriumERP.Infrastructure.Modules;
+using EquillibriumERP.Infrastructure.Endpoints;
+using EquillibriumERP.Infrastructure.MultiTenancy;
+
+
+var builder = WebApplication.CreateBuilder(args);
+
+// -------------------------
+// CORE SERVICES
+// -------------------------
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
+
+// -------------------------
+// INFRASTRUCTURE
+// -------------------------
+builder.Services.AddInfrastructure(builder.Configuration);
+
+// -------------------------
+// TENANT SESSION
+// -------------------------
+builder.Services.AddScoped<ITenantSession, TenantSession>();
+
+// -------------------------
+// MODULE EXECUTOR
+// -------------------------
+builder.Services.AddSingleton<IModuleExecutor, ModuleExecutor>();
+
+// =====================================================
+// MODULE REGISTRATION (STEP 0 FIXED)
+// =====================================================
+// ❌ REMOVED: BuildServiceProvider usage (this was wrong)
+
+// -------------------------
+// BUILD APP
+// -------------------------
+var app = builder.Build();
+
+// -------------------------
+// PIPELINE
+// -------------------------
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+
+// MUST be early (captures X-Tenant-Id into session)
+app.UseMiddleware<TenantSessionMiddleware>();
+
+app.UseAuthorization();
+
+// -------------------------
+// SHARED ENDPOINTS
+// -------------------------
+app.MapTenantSessionEndpoints();
+
+// -------------------------
+// MODULE ENDPOINT MAPPING
+// -------------------------
+var runtimeExecutor = app.Services.GetRequiredService<IModuleExecutor>();
+runtimeExecutor.MapModules(app);
+
+app.MapControllers();
+
+app.Run();
+
+/*
+using EquillibriumERP.Api.Middleware;
 using EquillibriumERP.Api.Endpoints;
 using EquillibriumERP.Infrastructure.DependencyInjection;
 using EquillibriumERP.Abstractions.Modules;
@@ -52,7 +127,7 @@ app.MapTenantOnboardingEndpoints();
 
     m.MapEndpoints(app);
 }*/
-
+/*
 foreach (var m in modules)
 {
     m.MapEndpoints(app);
@@ -61,3 +136,4 @@ foreach (var m in modules)
 app.MapControllers();
 
 app.Run();
+*/
