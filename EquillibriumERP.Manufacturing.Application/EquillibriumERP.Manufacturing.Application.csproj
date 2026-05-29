@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EquillibriumERP.Manufacturing.Domain\EquillibriumERP.Manufacturing.Domain.csproj" />
+    <ProjectReference Include="..\EquillibriumERP.Core.Abstractions\EquillibriumERP.Core.Abstractions.csproj" />    
+    <ProjectReference Include="..\EquillibriumERP.Core.Infrastructure\EquillibriumERP.Core.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

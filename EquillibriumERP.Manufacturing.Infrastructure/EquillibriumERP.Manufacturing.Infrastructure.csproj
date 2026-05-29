@@ -8,10 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.7" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EquillibriumERP.Abstractions\EquillibriumERP.Abstractions.csproj" />
+    <ProjectReference Include="..\EquillibriumERP.Core.Abstractions\EquillibriumERP.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\EquillibriumERP.Manufacturing.Domain\EquillibriumERP.Manufacturing.Domain.csproj" />
+    <ProjectReference Include="..\EquillibriumERP.Manufacturing.Application\EquillibriumERP.Manufacturing.Application.csproj" />
   </ItemGroup>
 
 </Project>

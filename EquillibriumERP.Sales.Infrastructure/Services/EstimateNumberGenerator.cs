@@ -1,4 +1,4 @@
-using EquillibriumERP.Abstractions.Persistence;
+using EquillibriumERP.Core.Abstractions.Persistence;
 using EquillibriumERP.Sales.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 

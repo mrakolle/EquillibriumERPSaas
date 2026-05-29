@@ -1,7 +1,8 @@
 <Solution>
-  <Project Path="EquillibriumERP.Abstractions/EquillibriumERP.Abstractions.csproj" />
-  <Project Path="EquillibriumERP.Api/EquillibriumERP.Api.csproj" />
-  <Project Path="EquillibriumERP.Infrastructure/EquillibriumERP.Infrastructure.csproj" />
+  <Project Path="EquillibriumERP.Core.Abstractions/EquillibriumERP.Core.Abstractions.csproj" />
+  <Project Path="EquillibriumERP.Core.Api/EquillibriumERP.Core.Api.csproj" />
+  <Project Path="EquillibriumERP.ControlPlane/EquillibriumERP.ControlPlane.csproj" />
+  <Project Path="EquillibriumERP.Core.Infrastructure/EquillibriumERP.Core.Infrastructure.csproj" />
   <Project Path="EquillibriumERP.Inventory.Application/EquillibriumERP.Inventory.Application.csproj" />
   <Project Path="EquillibriumERP.Inventory.Domain/EquillibriumERP.Inventory.Domain.csproj" />
   <Project Path="EquillibriumERP.Inventory.Infrastructure/EquillibriumERP.Inventory.Infrastructure.csproj" />
@@ -14,6 +15,9 @@
   <Project Path="EquillibriumERP.MES.Application/EquillibriumERP.MES.Application.csproj" />
   <Project Path="EquillibriumERP.MES.Domain/EquillibriumERP.MES.Domain.csproj" />
   <Project Path="EquillibriumERP.MES.Infrastructure/EquillibriumERP.MES.Infrastructure.csproj" />
+  <Project Path="EquillibriumERP.Products.Application/EquillibriumERP.Products.Application.csproj" />
+  <Project Path="EquillibriumERP.Products.Domain/EquillibriumERP.Products.Domain.csproj" />
+  <Project Path="EquillibriumERP.Products.Infrastructure/EquillibriumERP.Products.Infrastructure.csproj" />
   <Project Path="EquillibriumERP.Quality.Application/EquillibriumERP.Quality.Application.csproj" />
   <Project Path="EquillibriumERP.Quality.Domain/EquillibriumERP.Quality.Domain.csproj" />
   <Project Path="EquillibriumERP.Quality.Infrastructure/EquillibriumERP.Quality.Infrastructure.csproj" />

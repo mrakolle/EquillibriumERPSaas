@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EquillibriumERP.Abstractions\EquillibriumERP.Abstractions.csproj" />
+    <ProjectReference Include="..\EquillibriumERP.Core.Abstractions\EquillibriumERP.Core.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

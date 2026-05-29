@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\EquillibriumERP.Abstractions\EquillibriumERP.Abstractions.csproj" />
+    <ProjectReference Include="..\EquillibriumERP.Core.Abstractions\EquillibriumERP.Core.Abstractions.csproj" />
     <ProjectReference Include="..\EquillibriumERP.SharedKernel\EquillibriumERP.SharedKernel.csproj" />
   </ItemGroup>
 

@@ -1,6 +1,0 @@
-@EquillibriumERP.Api_HostAddress = http://localhost:5167
-
-GET {{EquillibriumERP.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

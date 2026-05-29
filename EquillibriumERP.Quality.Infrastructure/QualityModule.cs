@@ -1,4 +1,4 @@
-using EquillibriumERP.Abstractions.Modules;
+using EquillibriumERP.Core.Abstractions.Modules;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

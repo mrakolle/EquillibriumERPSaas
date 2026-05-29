@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using EquillibriumERP.Abstractions.Persistence;
-using EquillibriumERP.Abstractions.MultiTenancy;
+using EquillibriumERP.Core.Abstractions.Persistence;
+using EquillibriumERP.Core.Abstractions.MultiTenancy;
 using EquillibriumERP.Sales.Domain.Entities;
 
 namespace EquillibriumERP.Sales.Infrastructure.Services;
