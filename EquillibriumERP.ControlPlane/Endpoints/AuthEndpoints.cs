@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,43 +14,44 @@ public static class AuthEndpoints
 {
     public static void MapAuthEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapPost("/auth/login",
-        async (
-            LoginRequest request,
-            MasterDbContext db,
-            JwtTokenService jwt) =>
-        {
-            var user = await db.Users
-                .FirstOrDefaultAsync(x => x.Email == request.Email);
+        app.MapPost("/auth/login", HandleLogin)
+           .AllowAnonymous()
+           .WithName("Login");
+    }
 
-            if (user is null)
-                return Results.Unauthorized();
+    private static async Task<IResult> HandleLogin(
+        LoginRequest request,
+        MasterDbContext db,
+        JwtTokenService jwt)
+    {
+        var user = await db.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Email == request.Email);
 
-            var hasher = new PasswordHasher<User>();
+        if (user is null)
+            return Results.Unauthorized();
+        var hasher = new PasswordHasher<User>();
 
-            var passwordResult = hasher.VerifyHashedPassword(
-                user,
-                user.PasswordHash,
-                request.Password
-            );
+        var passwordResult = hasher.VerifyHashedPassword(
+            user,
+            user.PasswordHash,
+            request.Password
+        );
 
-            if (passwordResult == PasswordVerificationResult.Failed)
-                return Results.Unauthorized();
+        if (passwordResult == PasswordVerificationResult.Failed)
+            return Results.Unauthorized();
 
-            var token = jwt.CreateToken(
-                user.Id,
-                user.TenantId,
-                user.Email
-            );
+        var token = jwt.CreateToken(
+            user.Id,
+            user.TenantId,
+            user.Email
+        );
 
-            return Results.Ok(new LoginResponse(
-                token,
-                user.Id,
-                user.TenantId
-            ));
-        })
-        .AllowAnonymous()
-        .WithName("Login");
+        return Results.Ok(new LoginResponse(
+            token,
+            user.Id,
+            user.TenantId
+        ));
     }
 
     public record LoginRequest(string Email, string Password);

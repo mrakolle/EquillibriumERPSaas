@@ -12,9 +12,11 @@ using EquillibriumERP.ControlPlane.Endpoints;
 using EquillibriumERP.ControlPlane.DependencyInjection;
 using EquillibriumERP.Core.Infrastructure.Auth;
 using Microsoft.AspNetCore.Authorization;
+using EquillibriumERP.Core.Infrastructure.Authorization;
 
 
 var builder = WebApplication.CreateBuilder(args);
+//AppContext.SetSwitch("System.Net.DisableIPv6", true);
 var configuration = builder.Configuration;
 
 // =====================================================
@@ -71,6 +73,10 @@ builder.Services.AddSwaggerGen(c =>
 // JWT AUTHENTICATION
 // =====================================================
 
+// =====================================================
+// JWT AUTHENTICATION
+// =====================================================
+
 var jwt = configuration.GetSection("Jwt");
 
 var key = Encoding.UTF8.GetBytes(jwt["Key"]!);
@@ -95,20 +101,9 @@ builder.Services
             };
     });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("products.view",
-        p => p.Requirements.Add(
-            new PermissionRequirement("products.view")));
+builder.Services.AddAuthorization();
 
-    options.AddPolicy("products.create",
-        p => p.Requirements.Add(
-            new PermissionRequirement("products.create")));
-});
-
-builder.Services.AddSingleton<
-    IAuthorizationHandler,
-    PermissionHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
 // =====================================================
@@ -193,11 +188,9 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
-app.UseAuthorization();
-
-
 app.UseMiddleware<TenantMiddleware>();
 
+app.UseAuthorization();
 // =====================================================
 // SHARED ENDPOINTS
 // =====================================================
