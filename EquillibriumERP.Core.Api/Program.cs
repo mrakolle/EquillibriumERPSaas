@@ -11,6 +11,8 @@ using EquillibriumERP.Core.Infrastructure.MultiTenancy;
 using EquillibriumERP.ControlPlane.Endpoints;
 using EquillibriumERP.ControlPlane.DependencyInjection;
 using EquillibriumERP.Core.Infrastructure.Auth;
+using Microsoft.AspNetCore.Authorization;
+
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -93,7 +95,21 @@ builder.Services
             };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("products.view",
+        p => p.Requirements.Add(
+            new PermissionRequirement("products.view")));
+
+    options.AddPolicy("products.create",
+        p => p.Requirements.Add(
+            new PermissionRequirement("products.create")));
+});
+
+builder.Services.AddSingleton<
+    IAuthorizationHandler,
+    PermissionHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
 // =====================================================
 // VALIDATION
@@ -178,6 +194,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
 
 app.UseMiddleware<TenantMiddleware>();
 

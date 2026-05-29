@@ -27,7 +27,10 @@ public class JwtTokenService
         {
             new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
             new Claim("tenant_id", tenantId.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, email)
+            new Claim(JwtRegisteredClaimNames.Email, email),
+            new Claim("permission", "products.view"), // Hardcoded Temporarily
+            new Claim("permission", "products.create"), // Hardcoded Temporarily
+            //new Claim("permission", "products.delete"), // Hardcoded Temporarily
         };
 
         var token = new JwtSecurityToken(
