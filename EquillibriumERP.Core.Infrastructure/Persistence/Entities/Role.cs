@@ -8,7 +8,9 @@ public class Role
 
     public string Description { get; set; } = string.Empty;
 
-    public ICollection<Permission> Permissions { get; set; } = new List<Permission>();
+    public ICollection<RolePermission> Permissions
+    { get; set; }
+    = new List<RolePermission>();
 
    public ICollection<UserRole> UserRoles { get; set; }
     = new List<UserRole>();

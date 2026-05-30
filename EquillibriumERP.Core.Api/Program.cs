@@ -16,7 +16,6 @@ using EquillibriumERP.Core.Infrastructure.Authorization;
 
 
 var builder = WebApplication.CreateBuilder(args);
-//AppContext.SetSwitch("System.Net.DisableIPv6", true);
 var configuration = builder.Configuration;
 
 // =====================================================
@@ -68,10 +67,6 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-
-// =====================================================
-// JWT AUTHENTICATION
-// =====================================================
 
 // =====================================================
 // JWT AUTHENTICATION
@@ -198,6 +193,8 @@ app.UseAuthorization();
 app.MapAuthEndpoints();
 app.MapUserEndpoints();
 app.MapTenantProvisioningEndpoints();
+PermissionEndpoints.MapPermissionEndpoints(app);
+RoleEndpoints.MapRoleEndpoints(app);
 
 // =====================================================
 // MODULE ENDPOINTS
@@ -207,7 +204,14 @@ foreach (var module in modules)
 {
     module.MapEndpoints(app);
 }
+// =====================================================
+// DEBUG ENDPOINTS  to be move to ControlPlane for production use
+// =====================================================
 
+
+// =====================================================
+// RUN - Launch the application
+// =====================================================
 app.Run();
 
 /*

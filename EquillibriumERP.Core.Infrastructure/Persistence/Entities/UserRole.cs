@@ -1,16 +1,14 @@
-using System;
-
 namespace EquillibriumERP.Core.Infrastructure.Persistence.Entities;
 
 public class UserRole
 {
     public Guid UserId { get; set; }
-    public User User { get; set; } = default!;
+
+    public User User { get; set; } = null!;
 
     public Guid RoleId { get; set; }
-    public Role Role { get; set; } = default!;
 
-    public DateTime AssignedAtUtc { get; set; }
+    public Role Role { get; set; } = null!;
 
-    public Guid? AssignedByUserId { get; set; }
+    public DateTime AssignedAtUtc { get; set; } = DateTime.UtcNow;
 }

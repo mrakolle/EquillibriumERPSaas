@@ -1,4 +1,5 @@
 using EquillibriumERP.Core.Abstractions.Modules;
+using EquillibriumERP.Core.Abstractions;
 using EquillibriumERP.Products.Application.Interfaces;
 using EquillibriumERP.Products.Infrastructure.Endpoints;
 using EquillibriumERP.Products.Infrastructure.Services;
@@ -17,6 +18,7 @@ public class ProductsModule : IModule
         IConfiguration config)
     {
         services.AddScoped<IProductService, ProductService>();
+       services.AddSingleton<IModulePermissionProvider,ProductsPermissionProvider>();
     }
 
     public void RegisterModel(
