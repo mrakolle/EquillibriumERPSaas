@@ -3,7 +3,7 @@ using EquillibriumERP.Core.Infrastructure.Persistence;
 using EquillibriumERP.Core.Infrastructure.Persistence.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using EquillibriumERP.ControlPlane.Application.Roles;
+using EquillibriumERP.ControlPlane.Application.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace EquillibriumERP.ControlPlane.Endpoints;
