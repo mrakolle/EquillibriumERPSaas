@@ -190,8 +190,10 @@ app.UseAuthorization();
 // SHARED ENDPOINTS
 // =====================================================
 
-app.MapAuthEndpoints();
-app.MapUserEndpoints();
+//app.MapAuthEndpoints();
+//app.MapUserEndpoints();
+AuthEndpoints.MapAuthEndpoints(app);
+UserEndpoints.MapUserEndpoints(app);
 app.MapTenantProvisioningEndpoints();
 PermissionEndpoints.MapPermissionEndpoints(app);
 RoleEndpoints.MapRoleEndpoints(app);

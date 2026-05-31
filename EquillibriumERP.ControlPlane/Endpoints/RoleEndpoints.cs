@@ -53,20 +53,13 @@ public static class RoleEndpoints
 
     private static void MapUpdateRole(RouteGroupBuilder group)
     {
-        group.MapPut("/{id:guid}",
+       group.MapPut("/{id:guid}",
         async (
             Guid id,
             UpdateRoleRequest request,
             MasterDbContext db,
             IServiceProvider sp) =>
         {
-            var role = await db.Roles
-                .Include(r => r.Permissions)
-                .FirstOrDefaultAsync(r => r.Id == id);
-
-            if (role is null)
-                return Results.NotFound();
-
             var validPermissions = PermissionRegistry
                 .GetAll(sp)
                 .Select(x => x.Code)
@@ -77,13 +70,17 @@ public static class RoleEndpoints
                 .ToList();
 
             if (invalid.Any())
-            {
                 return Results.BadRequest(new
                 {
                     error = "Invalid permissions",
                     invalid
                 });
-            }
+
+            var role = await db.Roles
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (role is null)
+                return Results.NotFound();
 
             role.Name = request.Name;
             role.Description = request.Description;
@@ -92,14 +89,15 @@ public static class RoleEndpoints
                 .Where(x => x.RoleId == role.Id)
                 .ExecuteDeleteAsync();
 
-            role.Permissions = request.Permissions
+            var permissions = request.Permissions
                 .Select(p => new RolePermission
                 {
                     Id = Guid.NewGuid(),
                     RoleId = role.Id,
                     Code = p
-                })
-                .ToList();
+                });
+
+            await db.RolePermissions.AddRangeAsync(permissions);
 
             await db.SaveChangesAsync();
 
@@ -107,9 +105,7 @@ public static class RoleEndpoints
                 role.Id,
                 role.Name,
                 role.Description,
-                role.Permissions
-                    .Select(p => p.Code)
-                    .ToList()));
+                request.Permissions));
         });
     }
 

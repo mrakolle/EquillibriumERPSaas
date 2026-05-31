@@ -16,9 +16,23 @@ public static class ProductsPermissions
             "Create Products",
             "Allows creating products");
 
+    public static readonly PermissionDefinition Update =
+        new(
+            "products.update",
+            "Update Products",
+            "Allows updating products");
+
+    public static readonly PermissionDefinition Delete =
+        new(
+            "products.delete",
+            "Delete Products",
+            "Allows deleting products");
+
     public static readonly PermissionDefinition[] All =
     [
         View,
-        Create
+        Create,
+        Update,
+        Delete
     ];
 }
