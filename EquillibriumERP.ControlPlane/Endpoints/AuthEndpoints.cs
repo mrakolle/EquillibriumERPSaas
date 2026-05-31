@@ -14,11 +14,13 @@ public static class AuthEndpoints
 {
     public static void MapAuthEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapPost("/auth/login", HandleLogin)
+        var group = app.MapGroup("/auth")
+           .WithTags("Authentication");
+        group.MapPost("/login", HandleLogin)
            .AllowAnonymous()
            .WithName("Login");
     }
-
+    
     private static async Task<IResult> HandleLogin(
         LoginRequest request,
         MasterDbContext db,

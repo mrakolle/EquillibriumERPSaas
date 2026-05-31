@@ -14,6 +14,7 @@ public static class ProductProvisioningEndpoints
     public static void MapProductProvisioningEndpoints(this WebApplication app)
     {
         var group = app.MapGroup("/products")
+            .WithTags("Products")
             .RequireAuthorization();
 
         MapCreateProduct(group);
@@ -23,6 +24,7 @@ public static class ProductProvisioningEndpoints
 
     private static void MapGetAllProducts(RouteGroupBuilder group)
     {
+        
         group.MapGet("/get-all", async (HttpContext ctx) =>
         {
             var service = ctx.RequestServices.GetRequiredService<IProductService>();
