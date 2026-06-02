@@ -1,4 +1,4 @@
-namespace EquillibriumERP.ControlPlane.Application.Contracts.Requests;
+namespace EquillibriumERP.ControlPlane.Contracts.Responses;
 
 public sealed record CreateRoleRequest(
     string Name,

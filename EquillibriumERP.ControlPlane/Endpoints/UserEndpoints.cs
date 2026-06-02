@@ -1,15 +1,13 @@
-using EquillibriumERP.Core.Infrastructure.Authorization;
-using EquillibriumERP.ControlPlane.Contracts.Requests;
-using EquillibriumERP.ControlPlane.Contracts.Responses;
-using EquillibriumERP.Core.Infrastructure.Persistence.Entities;
-using EquillibriumERP.Core.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Http;
+using EquillibriumERP.Core.Identity.Infrastructure.Entities;
+using EquillibriumERP.Core.Infrastructure.Persistence;
 using EquillibriumERP.Core.Abstractions.Validations;
-using EquillibriumERP.ControlPlane.Application.Contracts.Requests;
-using EquillibriumERP.ControlPlane.Application.Contracts.Responses;
+
+using EquillibriumERP.ControlPlane.Contracts.Requests;
+using EquillibriumERP.ControlPlane.Contracts.Responses;
 
 
 namespace EquillibriumERP.ControlPlane.Endpoints;
@@ -28,40 +26,39 @@ public static class UserEndpoints
         MapDeleteUser(group);
     }
 
+    // CREATE
     private static void MapCreateUser(RouteGroupBuilder group)
     {
-        // CREATE
-       group.MapPost("/", async (
+        group.MapPost("/", async (
             CreateUserRequest request,
-            MasterDbContext db) =>
-            
+            TenantDbContext db) =>
         {
             ValidationHelper.EnsureNoDuplicatesOrThrow(request.RoleIds, "Duplicate roles not allowed");
+
             var user = new User
             {
                 Id = Guid.NewGuid(),
-                TenantId = Guid.NewGuid(), // replace with real tenant resolver later
+                Email = request.Email,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                Email = request.Email,
-                PasswordHash = "TEMP", // replace with auth later
-                IsActive = true
+                PasswordHash = "TEMP",
+                IsActive = true,
+                CreatedAtUtc = DateTime.UtcNow
             };
 
-            db.Users.Add(user);
+            db.Set<User>().Add(user);
 
             await db.SaveChangesAsync();
 
-            // IMPORTANT: roles handled AFTER user exists
             if (request.RoleIds.Any())
             {
-                var userRoles = request.RoleIds.Select(roleId => new UserRole
+                var roles = request.RoleIds.Select(roleId => new UserRole
                 {
                     UserId = user.Id,
                     RoleId = roleId
                 });
 
-                await db.UserRoles.AddRangeAsync(userRoles);
+                await db.Set<UserRole>().AddRangeAsync(roles);
                 await db.SaveChangesAsync();
             }
 
@@ -69,12 +66,12 @@ public static class UserEndpoints
         });
     }
 
+    // GET ALL
     private static void MapGetUsers(RouteGroupBuilder group)
     {
-         // GET ALL
-        group.MapGet("/", async (MasterDbContext db) =>
+        group.MapGet("/", async (TenantDbContext db) =>
         {
-            var users = await db.Users
+            var users = await db.Set<User>()
                 .Include(u => u.UserRoles)
                 .Select(u => new UserResponse(
                     u.Id,
@@ -90,12 +87,12 @@ public static class UserEndpoints
         });
     }
 
+    // GET BY ID
     private static void MapGetUserById(RouteGroupBuilder group)
     {
-       // GET BY ID
-        group.MapGet("/{id:guid}", async (Guid id, MasterDbContext db) =>
+        group.MapGet("/{id:guid}", async (Guid id, TenantDbContext db) =>
         {
-            var user = await db.Users
+            var user = await db.Set<User>()
                 .Include(u => u.UserRoles)
                 .FirstOrDefaultAsync(u => u.Id == id);
 
@@ -113,64 +110,61 @@ public static class UserEndpoints
         });
     }
 
+    // UPDATE
     private static void MapUpdateUser(RouteGroupBuilder group)
     {
-        // UPDATE
         group.MapPut("/{id:guid}", async (
             Guid id,
             UpdateUserRequest request,
-            MasterDbContext db) =>
+            TenantDbContext db) =>
         {
             ValidationHelper.EnsureNoDuplicatesOrThrow(request.RoleIds, "Duplicate roles not allowed");
-            var user = await db.Users
+
+            var user = await db.Set<User>()
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             if (user is null)
                 return Results.NotFound();
 
-            // 1. Update scalar fields
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
             user.Email = request.Email;
             user.IsActive = request.IsActive;
 
-            // 2. HARD RESET ROLE LINKS (NO TRACKING ISSUES EVER)
-            await db.UserRoles
+            await db.Set<UserRole>()
                 .Where(x => x.UserId == user.Id)
                 .ExecuteDeleteAsync();
 
-            // 3. Reinsert roles (clean state)
             var newRoles = request.RoleIds.Select(roleId => new UserRole
             {
                 UserId = user.Id,
                 RoleId = roleId
             });
 
-            await db.UserRoles.AddRangeAsync(newRoles);
+            await db.Set<UserRole>().AddRangeAsync(newRoles);
 
-            // 4. Save once
             await db.SaveChangesAsync();
 
             return Results.Ok(user.Id);
         });
     }
 
+    // DELETE
     private static void MapDeleteUser(RouteGroupBuilder group)
     {
-         // DELETE
-        group.MapDelete("/{id:guid}", async (Guid id, MasterDbContext db) =>
+        group.MapDelete("/{id:guid}", async (Guid id, TenantDbContext db) =>
         {
-            var user = await db.Users
+            var user = await db.Set<User>()
                 .FirstOrDefaultAsync(u => u.Id == id);
 
             if (user is null)
                 return Results.NotFound();
 
-            await db.UserRoles
+            await db.Set<UserRole>()
                 .Where(x => x.UserId == user.Id)
                 .ExecuteDeleteAsync();
 
-            db.Users.Remove(user);
+            db.Set<User>().Remove(user);
 
             await db.SaveChangesAsync();
 

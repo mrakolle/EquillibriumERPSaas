@@ -69,7 +69,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // =====================================================
-// JWT AUTHENTICATION
+// JWT AUTHENTICATION/ AUTHORIZATION
 // =====================================================
 
 var jwt = configuration.GetSection("Jwt");
@@ -98,8 +98,12 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+// Permission-based authorization (ERP layer)
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+
+// Optional: clean extension hook (if you added it earlier)
+// builder.Services.AddPermissionAuthorization();
 
 // =====================================================
 // VALIDATION
@@ -193,6 +197,7 @@ app.UseAuthorization();
 //app.MapAuthEndpoints();
 //app.MapUserEndpoints();
 AuthEndpoints.MapAuthEndpoints(app);
+//PermissionEndpoints.MapPermissionEndpoints(app);
 UserEndpoints.MapUserEndpoints(app);
 app.MapTenantProvisioningEndpoints();
 PermissionEndpoints.MapPermissionEndpoints(app);

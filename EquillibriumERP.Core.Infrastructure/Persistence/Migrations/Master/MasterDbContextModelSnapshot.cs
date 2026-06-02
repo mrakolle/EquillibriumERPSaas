@@ -177,34 +177,6 @@ namespace EquillibriumERP.Core.Infrastructure.Persistence.Migrations.Master
                     b.ToTable("Payments");
                 });
 
-            modelBuilder.Entity("EquillibriumERP.Core.Infrastructure.Persistence.Entities.Permission", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid?>("RoleId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("Permissions", (string)null);
-                });
-
             modelBuilder.Entity("EquillibriumERP.Core.Infrastructure.Persistence.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -222,6 +194,30 @@ namespace EquillibriumERP.Core.Infrastructure.Persistence.Migrations.Master
                     b.HasKey("Id");
 
                     b.ToTable("Roles", (string)null);
+                });
+
+            modelBuilder.Entity("EquillibriumERP.Core.Infrastructure.Persistence.Entities.RolePermission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("RoleId", "Code")
+                        .IsUnique();
+
+                    b.ToTable("RolePermissions", (string)null);
                 });
 
             modelBuilder.Entity("EquillibriumERP.Core.Infrastructure.Persistence.Entities.Tenant", b =>
@@ -318,12 +314,11 @@ namespace EquillibriumERP.Core.Infrastructure.Persistence.Migrations.Master
                     b.Property<DateTime>("AssignedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("AssignedByUserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserRoles", (string)null);
                 });
@@ -353,12 +348,13 @@ namespace EquillibriumERP.Core.Infrastructure.Persistence.Migrations.Master
                     b.ToTable("Webhooks");
                 });
 
-            modelBuilder.Entity("EquillibriumERP.Core.Infrastructure.Persistence.Entities.Permission", b =>
+            modelBuilder.Entity("EquillibriumERP.Core.Infrastructure.Persistence.Entities.RolePermission", b =>
                 {
                     b.HasOne("EquillibriumERP.Core.Infrastructure.Persistence.Entities.Role", "Role")
                         .WithMany("Permissions")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Role");
                 });

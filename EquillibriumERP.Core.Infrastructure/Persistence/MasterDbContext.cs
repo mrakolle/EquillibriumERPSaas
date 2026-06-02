@@ -10,25 +10,32 @@ public class MasterDbContext : DbContext
     {
     }
 
-
+    //===================================================================================
+    // Master data entities
+    //===================================================================================
     public DbSet<Tenant> Tenants => Set<Tenant>();
-    public DbSet<User> Users => Set<User>();
-    public DbSet<Role> Roles => Set<Role>();
-     public DbSet<UserRole> UserRoles => Set<UserRole>();
-    public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
-
-    //=================================================================================
-    // MODULE ENTITIES MUST BE HANDLED BY MODULES T
-    //=================================================================================
-
+    public DbSet<MasterUser> MasterUsers => Set<MasterUser>();
     public DbSet<Feature> Features => Set<Feature>();
     public DbSet<TenantFeature> TenantFeatures => Set<TenantFeature>();
+
+    //===================================================================================
+    // Billing and subscription related entities
+    //===================================================================================
     public DbSet<BillingProfile> BillingProfiles => Set<BillingProfile>();
     public DbSet<BillingInvoice> BillingInvoices => Set<BillingInvoice>();
     public DbSet<Payment> Payments => Set<Payment>();
+
+    //===================================================================================
+    // API keys, webhooks, and audit logs
+    //===================================================================================
     public DbSet<ApiKey> ApiKeys => Set<ApiKey>();
     public DbSet<Webhook> Webhooks => Set<Webhook>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+    public DbSet<MasterRole> MasterRoles => Set<MasterRole>();
+    public DbSet<MasterPermission> MasterPermissions => Set<MasterPermission>();
+    public DbSet<MasterUserRole> MasterUserRoles => Set<MasterUserRole>();
+    public DbSet<MasterRolePermission> MasterRolePermissions => Set<MasterRolePermission>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MasterDbContext).Assembly);

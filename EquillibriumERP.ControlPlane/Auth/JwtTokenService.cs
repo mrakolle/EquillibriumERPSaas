@@ -30,7 +30,7 @@ public class JwtTokenService
             new Claim(JwtRegisteredClaimNames.Email, email),
             new Claim("permission", "products.view"), // Hardcoded Temporarily
             new Claim("permission", "products.create"), // Hardcoded Temporarily
-            //new Claim("permission", "products.delete"), // Hardcoded Temporarily
+            new Claim("permission", "products.delete"), // Hardcoded Temporarily
         };
 
         var token = new JwtSecurityToken(

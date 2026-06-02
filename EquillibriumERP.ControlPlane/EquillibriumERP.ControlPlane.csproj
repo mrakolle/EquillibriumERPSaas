@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\EquillibriumERP.Core.Abstractions\EquillibriumERP.Core.Abstractions.csproj" />
     <ProjectReference Include="..\EquillibriumERP.Core.Infrastructure\EquillibriumERP.Core.Infrastructure.csproj" />
+    <ProjectReference Include="..\EquillibriumERP.Core.Identity.Infrastructure\EquillibriumERP.Core.Identity.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

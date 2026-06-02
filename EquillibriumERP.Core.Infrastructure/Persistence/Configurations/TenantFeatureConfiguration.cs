@@ -2,7 +2,7 @@ using EquillibriumERP.Core.Infrastructure.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace EquillibriumERP.Core.Infrastructure.Persistence.Configurations.Master;
+namespace EquillibriumERP.Core.Infrastructure.Persistence.Configurations;
 
 public class TenantFeatureConfiguration : IEntityTypeConfiguration<TenantFeature>
 {
@@ -16,7 +16,7 @@ public class TenantFeatureConfiguration : IEntityTypeConfiguration<TenantFeature
                .IsRequired();
 
         builder.HasOne(x => x.Tenant)
-               .WithMany()
+               .WithMany(x => x.Features)
                .HasForeignKey(x => x.TenantId)
                .OnDelete(DeleteBehavior.Cascade);
 

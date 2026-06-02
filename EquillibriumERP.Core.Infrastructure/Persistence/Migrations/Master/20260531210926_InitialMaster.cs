@@ -165,20 +165,18 @@ namespace EquillibriumERP.Core.Infrastructure.Persistence.Migrations.Master
                 });
 
             migrationBuilder.CreateTable(
-                name: "Permissions",
+                name: "RolePermissions",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Code = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    RoleId = table.Column<Guid>(type: "uuid", nullable: true)
+                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Code = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Permissions", x => x.Id);
+                    table.PrimaryKey("PK_RolePermissions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Permissions_Roles_RoleId",
+                        name: "FK_RolePermissions_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "Id",
@@ -216,8 +214,7 @@ namespace EquillibriumERP.Core.Infrastructure.Persistence.Migrations.Master
                 {
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     RoleId = table.Column<Guid>(type: "uuid", nullable: false),
-                    AssignedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    AssignedByUserId = table.Column<Guid>(type: "uuid", nullable: true)
+                    AssignedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -237,9 +234,15 @@ namespace EquillibriumERP.Core.Infrastructure.Persistence.Migrations.Master
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Permissions_RoleId",
-                table: "Permissions",
+                name: "IX_RolePermissions_RoleId",
+                table: "RolePermissions",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolePermissions_RoleId_Code",
+                table: "RolePermissions",
+                columns: new[] { "RoleId", "Code" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_TenantFeatures_FeatureId",
@@ -256,6 +259,11 @@ namespace EquillibriumERP.Core.Infrastructure.Persistence.Migrations.Master
                 name: "IX_UserRoles_RoleId",
                 table: "UserRoles",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRoles_UserId",
+                table: "UserRoles",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -277,7 +285,7 @@ namespace EquillibriumERP.Core.Infrastructure.Persistence.Migrations.Master
                 name: "Payments");
 
             migrationBuilder.DropTable(
-                name: "Permissions");
+                name: "RolePermissions");
 
             migrationBuilder.DropTable(
                 name: "TenantFeatures");

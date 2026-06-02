@@ -1,8 +1,8 @@
-using EquillibriumERP.Core.Infrastructure.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using EquillibriumERP.Core.Infrastructure.Persistence.Entities;
 
-namespace EquillibriumERP.Core.Infrastructure.Persistence.Configurations.Master;
+namespace EquillibriumERP.Core.Infrastructure.Persistence.Configurations;
 
 public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
 {
@@ -16,8 +16,16 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
             .IsRequired()
             .HasMaxLength(200);
 
+        builder.Property(x => x.Code)
+            .IsRequired()
+            .HasMaxLength(50);
+
+        builder.HasIndex(x => x.Code)
+            .IsUnique();
+
         builder.Property(x => x.Schema)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(100);
 
         builder.Property(x => x.IsActive)
             .IsRequired();
@@ -25,7 +33,8 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
         builder.Property(x => x.CreatedAt)
             .IsRequired();
 
-        builder.HasIndex(x => x.Schema)
-            .IsUnique();
+        builder.HasMany(x => x.Features)
+            .WithOne(x => x.Tenant)
+            .HasForeignKey(x => x.TenantId);
     }
 }

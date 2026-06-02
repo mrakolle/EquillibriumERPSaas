@@ -2,6 +2,7 @@
   <Project Path="EquillibriumERP.Core.Abstractions/EquillibriumERP.Core.Abstractions.csproj" />
   <Project Path="EquillibriumERP.Core.Api/EquillibriumERP.Core.Api.csproj" />
   <Project Path="EquillibriumERP.ControlPlane/EquillibriumERP.ControlPlane.csproj" />
+  <Project Path="EquillibriumERP.Core.Identity.Infrastructure/EquillibriumERP.Core.Identity.Infrastructure.csproj" />
   <Project Path="EquillibriumERP.Core.Infrastructure/EquillibriumERP.Core.Infrastructure.csproj" />
   <Project Path="EquillibriumERP.Inventory.Application/EquillibriumERP.Inventory.Application.csproj" />
   <Project Path="EquillibriumERP.Inventory.Domain/EquillibriumERP.Inventory.Domain.csproj" />
