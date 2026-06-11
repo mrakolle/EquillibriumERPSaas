@@ -15,4 +15,6 @@ public interface IModule
     void RegisterModel(ModelBuilder modelBuilder);
 
     void MapEndpoints(WebApplication app);
+
+    Task MigrateAsync(IServiceProvider services, string schema, CancellationToken cancellationToken);
 }

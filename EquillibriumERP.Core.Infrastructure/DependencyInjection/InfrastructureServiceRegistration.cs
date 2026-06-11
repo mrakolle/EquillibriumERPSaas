@@ -46,6 +46,7 @@ public static class InfrastructureServiceRegistration
         // MULTI-TENANCY CORE SERVICES
         // =====================================================
         services.AddScoped<ITenantResolver, TenantResolver>();
+        services.AddScoped<ITenantProvisioningService,TenantProvisioningService>();
         services.AddScoped<TenantProvisioningService>();
         services.AddScoped<TenantSchemaMigrator>();
 

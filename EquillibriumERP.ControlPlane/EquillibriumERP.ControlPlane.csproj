@@ -20,12 +20,12 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.7" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.7" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.18.0" />
-    <packageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.18.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EquillibriumERP.Core.Abstractions\EquillibriumERP.Core.Abstractions.csproj" />
     <ProjectReference Include="..\EquillibriumERP.Core.Infrastructure\EquillibriumERP.Core.Infrastructure.csproj" />
-    <ProjectReference Include="..\EquillibriumERP.Core.Identity.Infrastructure\EquillibriumERP.Core.Identity.Infrastructure.csproj" />
+    <ProjectReference Include="..\EquillibriumERP.Core.Identity\EquillibriumERP.Core.Identity.csproj" />
   </ItemGroup>
 
 </Project>

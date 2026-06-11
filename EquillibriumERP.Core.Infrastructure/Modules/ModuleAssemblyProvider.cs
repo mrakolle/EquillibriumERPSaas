@@ -33,12 +33,12 @@ public class ModuleAssemblyProvider : IModuleAssemblyProvider
     {
         return new[]
         {
-            typeof(EquillibriumERP.Sales.Infrastructure.ModuleMarker).Assembly,
-            typeof(EquillibriumERP.Inventory.Infrastructure.ModuleMarker).Assembly,
-            typeof(EquillibriumERP.Manufacturing.Infrastructure.ModuleMarker).Assembly,
-            typeof(EquillibriumERP.Quality.Infrastructure.ModuleMarker).Assembly,
-            //typeof(EquillibriumERP.MES.Infrastructure.ModuleMarker).Assembly,
-            //typeof(EquillibriumERP.IoT.Infrastructure.ModuleMarker).Assembly
+            typeof(EquillibriumERP.Sales.ModuleMarker).Assembly,
+            typeof(EquillibriumERP.Inventory.ModuleMarker).Assembly,
+            typeof(EquillibriumERP.Manufacturing.ModuleMarker).Assembly,
+            typeof(EquillibriumERP.Quality.ModuleMarker).Assembly,
+            //typeof(EquillibriumERP.MES.ModuleMarker).Assembly,
+            //typeof(EquillibriumERP.IoT.ModuleMarker).Assembly
         };
     }
 }*/

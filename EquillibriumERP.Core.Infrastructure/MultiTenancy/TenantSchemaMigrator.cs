@@ -2,9 +2,44 @@ using System.Data;
 using EquillibriumERP.Core.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using EquillibriumERP.Core.Abstractions.Modules;
 
 namespace EquillibriumERP.Core.Infrastructure.MultiTenancy;
 
+public class TenantSchemaMigrator
+{
+    private readonly IServiceProvider _serviceProvider;
+    private readonly IEnumerable<IModule> _modules;
+
+    public TenantSchemaMigrator(
+        IServiceProvider serviceProvider,
+        IEnumerable<IModule> modules)
+    {
+        _serviceProvider = serviceProvider;
+        _modules = modules;
+    }
+
+    public async Task MigrateAsync(string schema, CancellationToken cancellationToken)
+    {
+        using var scope = _serviceProvider.CreateScope();
+
+        foreach (var module in _modules
+            .Where(m => m.Name != "Onboarding")
+            .OrderBy(m => m.Name))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            Console.WriteLine($"➡ Migrating module: {module.Name}");
+
+            await module.MigrateAsync(scope.ServiceProvider, schema, cancellationToken);
+        }
+
+        Console.WriteLine($"✅ Tenant schema fully migrated: {schema}");
+    }
+}
+
+
+/* Old class
 public class TenantSchemaMigrator
 {
     private readonly IServiceProvider _serviceProvider;
@@ -42,4 +77,4 @@ public class TenantSchemaMigrator
 
         Console.WriteLine($"✅ Tenant schema migrated: {schema}");
     }
-}
+}*/

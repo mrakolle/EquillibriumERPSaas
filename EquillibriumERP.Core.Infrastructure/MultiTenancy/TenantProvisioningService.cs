@@ -1,9 +1,47 @@
+using System;
 using Microsoft.EntityFrameworkCore;
 using EquillibriumERP.Core.Infrastructure.Persistence;
+using EquillibriumERP.Core.Abstractions.Modules;
+using EquillibriumERP.Core.Abstractions.MultiTenancy;
 
 namespace EquillibriumERP.Core.Infrastructure.MultiTenancy;
 
-public class TenantProvisioningService
+public class TenantProvisioningService : ITenantProvisioningService
+{
+    private readonly MasterDbContext _masterDb;
+    private readonly TenantSchemaMigrator _migrator;
+
+    public TenantProvisioningService(
+        MasterDbContext masterDb,
+        TenantSchemaMigrator migrator)
+    {
+        _masterDb = masterDb;
+        _migrator = migrator;
+    }
+
+   public async Task<string> CreateTenantSchemaAsync(
+    Guid tenantId,
+    string schema,
+    CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(schema))
+            throw new ArgumentException("Schema cannot be empty");
+
+        // 1. CREATE SCHEMA (real DB object)
+        var sql = $"CREATE SCHEMA IF NOT EXISTS \"{schema}\";";
+
+        await _masterDb.Database.ExecuteSqlRawAsync(
+            sql,
+            cancellationToken);
+
+        // 2. RUN MODULE MIGRATIONS
+        await _migrator.MigrateAsync(schema, cancellationToken);
+
+        return schema;
+    }
+}
+
+/*public class TenantProvisioningService
 {
     private readonly MasterDbContext _masterDb;
     private readonly TenantSchemaMigrator _migrator;
@@ -29,4 +67,4 @@ public class TenantProvisioningService
 
         return schema;
     }
-}
+}*/

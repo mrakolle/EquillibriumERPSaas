@@ -8,11 +8,10 @@ using EquillibriumERP.Core.Infrastructure.DependencyInjection;
 using EquillibriumERP.Core.Abstractions.Modules;
 using EquillibriumERP.Core.Abstractions.MultiTenancy;
 using EquillibriumERP.Core.Infrastructure.MultiTenancy;
-using EquillibriumERP.ControlPlane.Endpoints;
-using EquillibriumERP.ControlPlane.DependencyInjection;
-using EquillibriumERP.Core.Infrastructure.Auth;
+using EquillibriumERP.Core.Identity.Auth;
 using Microsoft.AspNetCore.Authorization;
 using EquillibriumERP.Core.Infrastructure.Authorization;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +21,7 @@ var configuration = builder.Configuration;
 // CORE SERVICES
 // =====================================================
 
-builder.Services.AddControlPlane();
+//builder.Services.AddControlPlane();
 
 builder.Services.AddControllers();
 
@@ -156,6 +155,7 @@ var modules = AppDomain.CurrentDomain
 
 foreach (var module in modules)
 {
+    Console.WriteLine($"Registering services for module: {module.Name}");
     module.RegisterServices(
         builder.Services,
         configuration
@@ -194,21 +194,18 @@ app.UseAuthorization();
 // SHARED ENDPOINTS
 // =====================================================
 
-//app.MapAuthEndpoints();
-//app.MapUserEndpoints();
-AuthEndpoints.MapAuthEndpoints(app);
 //PermissionEndpoints.MapPermissionEndpoints(app);
-UserEndpoints.MapUserEndpoints(app);
-app.MapTenantProvisioningEndpoints();
-PermissionEndpoints.MapPermissionEndpoints(app);
-RoleEndpoints.MapRoleEndpoints(app);
+//TenantProvisioningEndpoints.MapTenantProvisioningEndpoints(app);
+
 
 // =====================================================
 // MODULE ENDPOINTS
 // =====================================================
+   
 
 foreach (var module in modules)
 {
+    Console.WriteLine($"Mapping endpoints for module: {module.Name}");
     module.MapEndpoints(app);
 }
 // =====================================================
@@ -226,9 +223,9 @@ using EquillibriumERP.Core.Api.Middleware;
 using EquillibriumERP.Core.Api.Endpoints;
 using EquillibriumERP.Core.Infrastructure.DependencyInjection;
 using EquillibriumERP.Core.Abstractions.Modules;
-using EquillibriumERP.Sales.Infrastructure;
-using EquillibriumERP.Inventory.Infrastructure;
-using EquillibriumERP.Manufacturing.Infrastructure;
+using EquillibriumERP.Sales;
+using EquillibriumERP.Inventory;
+using EquillibriumERP.Manufacturing;
 //using Microsoft.OpenApi.Models;
 
 

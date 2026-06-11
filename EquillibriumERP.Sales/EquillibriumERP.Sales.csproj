@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EquillibriumERP.SharedKernel\EquillibriumERP.SharedKernel.csproj" />
+    <ProjectReference Include="..\EquillibriumERP.Sales.Application\EquillibriumERP.Sales.Application.csproj" />
+    <ProjectReference Include="..\EquillibriumERP.Sales.Domain\EquillibriumERP.Sales.Domain.csproj" />
+    <ProjectReference Include="..\EquillibriumERP.Core.Infrastructure\EquillibriumERP.Core.Infrastructure.csproj" />
+    <ProjectReference Include="..\EquillibriumERP.Core.Abstractions\EquillibriumERP.Core.Abstractions.csproj" />
+    <ProjectReference Include="..\EquillibriumERP.Core.Infrastructure\EquillibriumERP.Core.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
