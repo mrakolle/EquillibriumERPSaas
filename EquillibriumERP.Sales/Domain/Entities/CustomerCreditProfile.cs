@@ -1,4 +1,17 @@
-using EquillibriumERP.SharedKernel.Common;
+namespace EquillibriumERP.Sales.Domain.Entities;
+
+public class CustomerCreditProfile
+{
+    public Guid Id { get; set; }
+
+    public Guid CustomerId { get; set; }
+    public Customer Customer { get; set; } = default!;
+
+    public decimal CreditLimit { get; set; }
+}
+
+
+/*using EquillibriumERP.SharedKernel.Common;
 
 namespace EquillibriumERP.Sales.Domain.Entities;
 
@@ -15,4 +28,4 @@ public class CustomerCreditProfile : AuditableEntity
     public bool IsOnHold { get; set; }
 
     public Customer Customer { get; set; } = default!;
-}
+}*/

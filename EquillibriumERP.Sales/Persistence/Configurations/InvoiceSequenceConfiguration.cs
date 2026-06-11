@@ -1,6 +1,9 @@
 using EquillibriumERP.Sales.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace EquillibriumERP.Sales.Persistence.Configurations;
+
 public class InvoiceSequenceConfiguration : IEntityTypeConfiguration<InvoiceSequence>
 {
     public void Configure(EntityTypeBuilder<InvoiceSequence> builder)
@@ -9,9 +12,7 @@ public class InvoiceSequenceConfiguration : IEntityTypeConfiguration<InvoiceSequ
 
         builder.HasKey(x => x.Id);
 
-        builder.HasIndex(x => x.Year).IsUnique();
-
-        builder.Property(x => x.Year).IsRequired();
-        builder.Property(x => x.LastNumber).IsRequired();
+        builder.Property(x => x.NextNumber)
+            .IsRequired();
     }
 }

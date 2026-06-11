@@ -13,25 +13,12 @@ public class InvoiceItemConfiguration : IEntityTypeConfiguration<InvoiceItem>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Description)
-            .IsRequired()
             .HasMaxLength(500);
 
         builder.Property(x => x.Quantity)
-            .HasPrecision(18, 2);
+            .IsRequired();
 
         builder.Property(x => x.UnitPrice)
-            .HasPrecision(18, 2);
-
-        builder.Property(x => x.TaxRate)
-            .HasPrecision(5, 2);
-
-        builder.Property(x => x.LineSubtotal)
-            .HasPrecision(18, 2);
-
-        builder.Property(x => x.TaxAmount)
-            .HasPrecision(18, 2);
-
-        builder.Property(x => x.LineTotal)
-            .HasPrecision(18, 2);
+            .HasColumnType("decimal(18,2)");
     }
 }

@@ -12,10 +12,7 @@ public class EstimateSequenceConfiguration : IEntityTypeConfiguration<EstimateSe
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Year).IsRequired();
-
-        builder.Property(x => x.LastNumber).IsRequired();
-
-        builder.HasIndex(x => x.Year).IsUnique(); // IMPORTANT for per-year sequence
+        builder.Property(x => x.NextNumber)
+            .IsRequired();
     }
 }

@@ -1,4 +1,19 @@
-using EquillibriumERP.SharedKernel.Common;
+namespace EquillibriumERP.Sales.Domain.Entities;
+
+public class Customer
+{
+    public Guid Id { get; set; }
+
+    public string Name { get; set; } = default!;
+    public string? Email { get; set; }
+
+    public ICollection<CustomerAddress> Addresses { get; set; } = new List<CustomerAddress>();
+    public ICollection<CustomerContact> Contacts { get; set; } = new List<CustomerContact>();
+}
+
+
+
+/*using EquillibriumERP.SharedKernel.Common;
 
 namespace EquillibriumERP.Sales.Domain.Entities;
 
@@ -25,4 +40,4 @@ public class Customer : AuditableEntity
 
     public ICollection<CustomerContact> Contacts { get; set; }
         = new List<CustomerContact>();
-}
+}*/

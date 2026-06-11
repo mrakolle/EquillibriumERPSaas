@@ -8,22 +8,27 @@ public static class InvoiceFactory
         Estimate estimate,
         string invoiceNumber)
     {
-        var invoice = new Invoice(
-            invoiceNumber,
-            estimate.CustomerId,
-            DateTime.UtcNow,
-            estimate.ExpiryDateUtc.AddDays(30)
-        );
+        var invoice = new Invoice
+        {
+            Id = Guid.NewGuid(),
+            CustomerId = estimate.CustomerId,
+            InvoiceNumber = invoiceNumber,
+            InvoiceDateUtc = DateTime.UtcNow,
+            TaxAmount = 0m
+        };
 
         foreach (var item in estimate.Items)
         {
-            invoice.AddItem(new InvoiceItem(
-                item.ProductId,
-                item.Description,
-                item.Quantity,
-                item.UnitPrice,
-                item.TaxRate
-            ));
+            invoice.AddItem(new InvoiceItem
+            {
+                Id = Guid.NewGuid(),
+                InvoiceId = invoice.Id,
+                ProductId = item.ProductId,
+                Description = item.Description,
+                Quantity = item.Quantity,
+                UnitPrice = item.UnitPrice,
+                TaxRate = item.TaxRate
+            });
         }
 
         return invoice;

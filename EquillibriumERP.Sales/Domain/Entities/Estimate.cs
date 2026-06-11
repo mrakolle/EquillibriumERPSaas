@@ -4,6 +4,29 @@ namespace EquillibriumERP.Sales.Domain.Entities;
 
 public class Estimate
 {
+    public Guid Id { get; set; }
+
+    public Guid CustomerId { get; set; }   
+
+    public string ReferenceNumber { get; set; } = null!;
+
+    public DateTime EstimateDateUtc { get; set; }
+
+    public EstimateStatus Status { get; set; }
+
+    public DateTime? ExpiryDateUtc { get; set; }  // optional but needed for InvoiceFactory safety
+
+    public List<EstimateItem> Items { get; set; } = new();
+}
+
+
+
+/*using EquillibriumERP.Sales.Domain.Enums;
+
+namespace EquillibriumERP.Sales.Domain.Entities;
+
+public class Estimate
+{
     public Guid Id { get; private set; }
 
     public string EstimateNumber { get; private set; } = null!;
@@ -93,4 +116,4 @@ public class Estimate
         TaxAmount = Items.Sum(x => x.TaxAmount);
         TotalAmount = Subtotal + TaxAmount;
     }
-}
+} */

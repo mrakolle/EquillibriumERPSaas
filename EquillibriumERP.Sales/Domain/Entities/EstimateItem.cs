@@ -2,6 +2,24 @@ namespace EquillibriumERP.Sales.Domain.Entities;
 
 public class EstimateItem
 {
+    public Guid Id { get; set; }
+
+    public Guid EstimateId { get; set; }
+
+    public Guid ProductId { get; set; }
+
+    public string Description { get; set; } = string.Empty;
+
+    public decimal Quantity { get; set; }
+
+    public decimal UnitPrice { get; set; }
+
+    public decimal TaxRate { get; set; }
+}
+/*namespace EquillibriumERP.Sales.Domain.Entities;
+
+public class EstimateItem
+{
     public Guid Id { get; private set; }
 
     public Guid EstimateId { get; private set; }
@@ -58,4 +76,4 @@ public class EstimateItem
 
         LineTotal = LineSubtotal + TaxAmount;
     }
-}
+}*/

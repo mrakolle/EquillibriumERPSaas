@@ -1,4 +1,55 @@
-using EquillibriumERP.Sales.Domain.Enums;
+namespace EquillibriumERP.Sales.Domain.Entities;
+
+public class Invoice
+{
+    public Guid Id { get; set; } = Guid.NewGuid();
+
+    public Guid CustomerId { get; set; }
+
+    public string InvoiceNumber { get; set; } = null!;
+
+    public decimal Subtotal { get; set; }
+
+    public decimal TaxAmount { get; set; }
+
+    public decimal TotalAmount { get; set; }
+
+    public decimal PaidAmount { get; set; }
+
+    public string? Notes { get; set; }
+
+    public DateTime InvoiceDateUtc { get; set; }
+
+    public DateTime DueDateUtc { get; set; }
+
+    public List<InvoiceItem> Items { get; set; } = new();
+
+    public List<InvoicePayment> Payments { get; set; } = new();
+
+    // ✔️ REQUIRED constructor (fix CS1729)
+    public Invoice(
+        string invoiceNumber,
+        Guid customerId,
+        DateTime invoiceDateUtc,
+        DateTime dueDateUtc)
+    {
+        InvoiceNumber = invoiceNumber;
+        CustomerId = customerId;
+        InvoiceDateUtc = invoiceDateUtc;
+        DueDateUtc = dueDateUtc;
+    }
+
+    // EF requirement
+    public Invoice() { }
+
+    public void AddItem(InvoiceItem item)
+    {
+        Items.Add(item);
+    }
+}
+
+
+/*using EquillibriumERP.Sales.Domain.Enums;
 
 namespace EquillibriumERP.Sales.Domain.Entities;
 
@@ -92,4 +143,4 @@ public class Invoice
 
         TotalAmount = Subtotal + TaxAmount;
     }
-}
+} */

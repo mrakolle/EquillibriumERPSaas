@@ -1,4 +1,18 @@
-using EquillibriumERP.SharedKernel.Common;
+namespace EquillibriumERP.Sales.Domain.Entities;
+
+public class CustomerAddress
+{
+    public Guid Id { get; set; }
+
+    public Guid CustomerId { get; set; }
+    public Customer Customer { get; set; } = default!;
+
+    public string Line1 { get; set; } = default!;
+    public string? City { get; set; }
+}
+
+
+/*using EquillibriumERP.SharedKernel.Common;
 
 namespace EquillibriumERP.Sales.Domain.Entities;
 
@@ -21,4 +35,4 @@ public class CustomerAddress : AuditableEntity
     public bool IsPrimary { get; set; }
 
     public Customer Customer { get; set; } = default!;
-}
+}*/

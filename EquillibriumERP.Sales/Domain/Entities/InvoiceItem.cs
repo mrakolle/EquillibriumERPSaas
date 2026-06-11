@@ -2,6 +2,42 @@ namespace EquillibriumERP.Sales.Domain.Entities;
 
 public class InvoiceItem
 {
+    public Guid Id { get; set; } = Guid.NewGuid();
+
+    public Guid InvoiceId { get; set; }
+
+    public Guid ProductId { get; set; }
+
+    public string Description { get; set; } = null!;
+
+    public decimal Quantity { get; set; }
+
+    public decimal UnitPrice { get; set; }
+
+    public decimal TaxRate { get; set; }
+
+    public InvoiceItem(
+        Guid productId,
+        string description,
+        decimal quantity,
+        decimal unitPrice,
+        decimal taxRate)
+    {
+        ProductId = productId;
+        Description = description;
+        Quantity = quantity;
+        UnitPrice = unitPrice;
+        TaxRate = taxRate;
+    }
+
+    public InvoiceItem() { }
+}
+
+
+/*namespace EquillibriumERP.Sales.Domain.Entities;
+
+public class InvoiceItem
+{
     public Guid Id { get; private set; }
 
     public Guid InvoiceId { get; private set; }
@@ -54,4 +90,4 @@ public class InvoiceItem
 
         LineTotal = LineSubtotal + TaxAmount;
     }
-}
+}*/
