@@ -3,14 +3,15 @@ using System.Threading;
 using Microsoft.EntityFrameworkCore;
 using EquillibriumERP.Core.Abstractions.Modules;
 using EquillibriumERP.Core.Abstractions;
+using EquillibriumERP.Core.Abstractions.Products;
 using EquillibriumERP.Products.Application.Interfaces;
 using EquillibriumERP.Products.Infrastructure.Endpoints;
-using EquillibriumERP.Products.Infrastructure.Services;
+using EquillibriumERP.Products.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace EquillibriumERP.Products.Infrastructure;
+namespace EquillibriumERP.Products;
 
 public class ProductsModule : IModule
 {
@@ -20,11 +21,13 @@ public class ProductsModule : IModule
         IServiceCollection services,
         IConfiguration config)
     {
+        
         services.AddDbContext<ProductsDbContext>(options =>
             options.UseNpgsql(
                 config.GetConnectionString("TenantDatabase")));
         services.AddScoped<IProductService, ProductService>();
         services.AddSingleton<IModulePermissionProvider,ProductsPermissionProvider>();
+        services.AddScoped<IProductLookup, ProductLookupService>();
     }
 
     public void RegisterModel(

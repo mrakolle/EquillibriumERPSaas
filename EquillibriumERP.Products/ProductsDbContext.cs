@@ -3,7 +3,7 @@ using EquillibriumERP.Core.Abstractions.MultiTenancy;
 using EquillibriumERP.Products.Domain.Entities;
 
 
-namespace EquillibriumERP.Products.Infrastructure;
+namespace EquillibriumERP.Products;
 
 public class ProductsDbContext : DbContext
 {

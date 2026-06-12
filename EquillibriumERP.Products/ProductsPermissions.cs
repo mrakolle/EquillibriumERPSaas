@@ -1,6 +1,6 @@
 using EquillibriumERP.Core.Abstractions.Authorization;
 
-namespace EquillibriumERP.Products.Infrastructure;
+namespace EquillibriumERP.Products;
 
 public static class ProductsPermissions
 {

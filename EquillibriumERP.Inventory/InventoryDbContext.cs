@@ -1,5 +1,6 @@
-using EquillibriumERP.Core.Abstractions.MultiTenancy;
 using Microsoft.EntityFrameworkCore;
+using EquillibriumERP.Core.Abstractions.MultiTenancy;
+using EquillibriumERP.Inventory.Domain.Entities;
 
 namespace EquillibriumERP.Inventory;
 
@@ -15,11 +16,12 @@ public class InventoryDbContext : DbContext
         _tenantSession = tenantSession;
     }
 
+    public DbSet<InventoryItem> InventoryItems => Set<InventoryItem>();
+
+    public DbSet<InventoryTransaction> InventoryTransactions => Set<InventoryTransaction>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.HasDefaultSchema(
-            $"tenant_{_tenantSession.TenantId:N}");
-
         base.OnModelCreating(builder);
 
         builder.ApplyConfigurationsFromAssembly(

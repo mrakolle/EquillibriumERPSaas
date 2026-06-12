@@ -1,11 +1,11 @@
 using EquillibriumERP.Core.Abstractions;
 using EquillibriumERP.Core.Abstractions.Authorization;
 
-namespace EquillibriumERP.Products;
+namespace EquillibriumERP.Purchasing;
 
-public sealed class ProductsPermissionProvider
+public sealed class PurchasingPermissionProvider
     : IModulePermissionProvider
 {
     public IEnumerable<PermissionDefinition> GetPermissions()
-        => ProductsPermissions.All;
+        => PurchasingPermissions.All;
 }

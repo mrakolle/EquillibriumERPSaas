@@ -1,14 +1,14 @@
-using System;
-using EquillibriumERP.Core.Abstractions.MultiTenancy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using EquillibriumERP.Core.Abstractions.MultiTenancy;
 
-namespace EquillibriumERP.Products;
-public class ProductsDbContextFactory : IDesignTimeDbContextFactory<ProductsDbContext>
+namespace EquillibriumERP.Inventory;
+
+public class InventoryDbContextFactory : IDesignTimeDbContextFactory<InventoryDbContext>
 {
-    public ProductsDbContext CreateDbContext(string[] args)
+    public InventoryDbContext CreateDbContext(string[] args)
     {
         var config = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
@@ -17,20 +17,19 @@ public class ProductsDbContextFactory : IDesignTimeDbContextFactory<ProductsDbCo
             .AddEnvironmentVariables()
             .Build();
 
-        var options = new DbContextOptionsBuilder<ProductsDbContext>()
+        var options = new DbContextOptionsBuilder<InventoryDbContext>()
             .UseNpgsql(config.GetConnectionString("TenantDatabase"))
             .Options;
 
         var services = new ServiceCollection();
 
         services.AddSingleton<ITenantSession, DesignTimeTenantSession>();
-        services.AddSingleton<ITenantResolver, DesignTimeTenantResolver>();
 
         var provider = services.BuildServiceProvider();
-
         var tenantSession = provider.GetRequiredService<ITenantSession>();
+
         tenantSession.TenantId = Guid.Empty;
 
-        return new ProductsDbContext(options, tenantSession);
+        return new InventoryDbContext(options, tenantSession);
     }
 }

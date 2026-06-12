@@ -6,7 +6,7 @@ using EquillibriumERP.Products.Domain.Entities;
 using EquillibriumERP.Products.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
-namespace EquillibriumERP.Products.Infrastructure.Services;
+namespace EquillibriumERP.Products.Services;
 
 public class ProductService : IProductService
 {
