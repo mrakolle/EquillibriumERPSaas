@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EquillibriumERP.Manufacturing.Migrations
 {
     [DbContext(typeof(ManufacturingDbContext))]
-    [Migration("20260628202034_InitialManufacturingBaseline")]
+    [Migration("20260630193149_InitialManufacturingBaseline")]
     partial class InitialManufacturingBaseline
     {
         /// <inheritdoc />
@@ -31,10 +31,6 @@ namespace EquillibriumERP.Manufacturing.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<Guid>("BillOfMaterialId")
                         .HasColumnType("uuid");
 
@@ -44,6 +40,13 @@ namespace EquillibriumERP.Manufacturing.Migrations
 
                     b.Property<int>("DurationMinutes")
                         .HasColumnType("integer");
+
+                    b.Property<decimal>("QuantityPercentage")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("numeric(18,4)");
+
+                    b.Property<Guid?>("RawMaterialProductId")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -57,6 +60,9 @@ namespace EquillibriumERP.Manufacturing.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BillOfMaterialId");
+
+                    b.HasIndex("BillOfMaterialId", "StepNumber")
+                        .IsUnique();
 
                     b.ToTable("BOMSteps", (string)null);
                 });
@@ -99,20 +105,25 @@ namespace EquillibriumERP.Manufacturing.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("BillOfMaterials", (string)null);
                 });
@@ -141,6 +152,8 @@ namespace EquillibriumERP.Manufacturing.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BillOfMaterialId");
+
+                    b.HasIndex("RawMaterialProductId");
 
                     b.ToTable("BillOfMaterialItems", (string)null);
                 });
@@ -257,8 +270,19 @@ namespace EquillibriumERP.Manufacturing.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("BatchNo")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
                     b.Property<Guid>("BillOfMaterialId")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LotNo")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<decimal>("PlannedQuantity")
                         .HasPrecision(18, 4)
@@ -274,7 +298,13 @@ namespace EquillibriumERP.Manufacturing.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BatchNo");
+
                     b.HasIndex("BillOfMaterialId");
+
+                    b.HasIndex("LotNo");
+
+                    b.HasIndex("Status");
 
                     b.ToTable("WorkOrders", (string)null);
                 });
@@ -310,6 +340,8 @@ namespace EquillibriumERP.Manufacturing.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("RawMaterialProductId");
+
                     b.HasIndex("WorkOrderId");
 
                     b.ToTable("WorkOrderMaterials", (string)null);
@@ -343,11 +375,79 @@ namespace EquillibriumERP.Manufacturing.Migrations
                     b.Property<Guid>("WorkOrderId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("WorkOrderMaterialId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("BOMProcessStepId");
 
                     b.HasIndex("WorkOrderId");
 
-                    b.ToTable("WorkOrderStep");
+                    b.HasIndex("WorkOrderMaterialId");
+
+                    b.HasIndex("WorkOrderId", "StepNumber")
+                        .IsUnique();
+
+                    b.ToTable("WorkOrderSteps", (string)null);
+                });
+
+            modelBuilder.Entity("EquillibriumERP.Manufacturing.Domain.Entities.WorkOrderTransaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("ActualQuantity")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("numeric(18,4)");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ExecutedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ExecutedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("ExpectedQuantity")
+                        .HasPrecision(18, 4)
+                        .HasColumnType("numeric(18,4)");
+
+                    b.Property<string>("RawMaterialLotNo")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("UnitOfMeasure")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<Guid>("WorkOrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("WorkOrderMaterialId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("WorkOrderStepId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Workstation")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExecutedAt");
+
+                    b.HasIndex("WorkOrderId");
+
+                    b.HasIndex("WorkOrderMaterialId");
+
+                    b.HasIndex("WorkOrderStepId");
+
+                    b.ToTable("WorkOrderTransactions", (string)null);
                 });
 
             modelBuilder.Entity("EquillibriumERP.Manufacturing.Domain.Entities.BOMStep", b =>
@@ -355,15 +455,6 @@ namespace EquillibriumERP.Manufacturing.Migrations
                     b.HasOne("EquillibriumERP.Manufacturing.Domain.Entities.BillOfMaterial", null)
                         .WithMany("Steps")
                         .HasForeignKey("BillOfMaterialId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("EquillibriumERP.Manufacturing.Domain.Entities.BOMStepMaterial", b =>
-                {
-                    b.HasOne("EquillibriumERP.Manufacturing.Domain.Entities.BOMStep", null)
-                        .WithMany()
-                        .HasForeignKey("BOMStepId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -434,12 +525,19 @@ namespace EquillibriumERP.Manufacturing.Migrations
             modelBuilder.Entity("EquillibriumERP.Manufacturing.Domain.Entities.WorkOrderStep", b =>
                 {
                     b.HasOne("EquillibriumERP.Manufacturing.Domain.Entities.WorkOrder", "WorkOrder")
-                        .WithMany()
+                        .WithMany("Steps")
                         .HasForeignKey("WorkOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EquillibriumERP.Manufacturing.Domain.Entities.WorkOrderMaterial", "WorkOrderMaterial")
+                        .WithMany()
+                        .HasForeignKey("WorkOrderMaterialId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("WorkOrder");
+
+                    b.Navigation("WorkOrderMaterial");
                 });
 
             modelBuilder.Entity("EquillibriumERP.Manufacturing.Domain.Entities.BillOfMaterial", b =>
@@ -456,6 +554,8 @@ namespace EquillibriumERP.Manufacturing.Migrations
                     b.Navigation("Materials");
 
                     b.Navigation("ProductBatches");
+
+                    b.Navigation("Steps");
                 });
 #pragma warning restore 612, 618
         }

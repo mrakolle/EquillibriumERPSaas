@@ -2,8 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using EquillibriumERP.Manufacturing.Domain.Entities;
 
-namespace EquillibriumERP.Manufacturing.Infrastructure.Configurations;
-
 public class BOMStepConfiguration : IEntityTypeConfiguration<BOMStep>
 {
     public void Configure(EntityTypeBuilder<BOMStep> builder)
@@ -19,24 +17,28 @@ public class BOMStepConfiguration : IEntityTypeConfiguration<BOMStep>
             .IsRequired();
 
         builder.Property(x => x.Description)
+            .IsRequired()
             .HasColumnType("text");
 
         builder.Property(x => x.DurationMinutes)
             .IsRequired();
 
         builder.Property(x => x.Type)
-            .HasConversion<int>()
+            .IsRequired();
+
+        builder.Property(x => x.RawMaterialProductId)
+            .IsRequired(false);
+
+        builder.Property(x => x.QuantityPercentage)
+            .HasPrecision(18, 4)
             .IsRequired();
 
         builder.Property(x => x.Status)
-            .HasConversion<int>()
             .IsRequired();
 
-        // NEW
-        builder.Property(x => x.RawMaterialProductId);
+        builder.HasIndex(x => x.BillOfMaterialId);
 
-        // NEW
-        builder.Property(x => x.QuantityPercentage)
-            .HasPrecision(18, 4);
+        builder.HasIndex(x => new { x.BillOfMaterialId, x.StepNumber })
+            .IsUnique();
     }
 }

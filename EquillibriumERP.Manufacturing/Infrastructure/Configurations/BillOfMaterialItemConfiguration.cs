@@ -2,10 +2,7 @@ using EquillibriumERP.Manufacturing.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace EquillibriumERP.Manufacturing.Infrastructure.Configurations;
-
-public sealed class BillOfMaterialItemConfiguration
-    : IEntityTypeConfiguration<BillOfMaterialItem>
+public class BillOfMaterialItemConfiguration : IEntityTypeConfiguration<BillOfMaterialItem>
 {
     public void Configure(EntityTypeBuilder<BillOfMaterialItem> builder)
     {
@@ -24,7 +21,18 @@ public sealed class BillOfMaterialItemConfiguration
             .IsRequired();
 
         builder.Property(x => x.UnitOfMeasure)
-            .HasMaxLength(20)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(20);
+
+        // Relationship: Item → BOM
+        builder.HasOne(x => x.BillOfMaterial)
+            .WithMany(x => x.Items)
+            .HasForeignKey(x => x.BillOfMaterialId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Indexes (important for BOM performance)
+        builder.HasIndex(x => x.BillOfMaterialId);
+
+        builder.HasIndex(x => x.RawMaterialProductId);
     }
 }

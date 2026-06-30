@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using EquillibriumERP.Manufacturing.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace EquillibriumERP.Manufacturing.Infrastructure.Configurations;
+using EquillibriumERP.Manufacturing.Domain.Entities;
 
 public class WorkOrderTransactionConfiguration : IEntityTypeConfiguration<WorkOrderTransaction>
 {
@@ -12,19 +10,55 @@ public class WorkOrderTransactionConfiguration : IEntityTypeConfiguration<WorkOr
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.ExpectedQuantity)
-            .HasPrecision(18, 4);
+        // Core traceability
+        builder.Property(x => x.WorkOrderId)
+            .IsRequired();
 
-        builder.Property(x => x.ActualQuantity)
-            .HasPrecision(18, 4);
+        builder.Property(x => x.WorkOrderStepId)
+            .IsRequired();
 
-        builder.Property(x => x.UnitOfMeasure)
-            .HasMaxLength(20);
+        builder.Property(x => x.WorkOrderMaterialId)
+            .IsRequired(false);
 
+        // Audit
         builder.Property(x => x.ExecutedAt)
             .IsRequired();
 
         builder.Property(x => x.ExecutedByUserId)
             .IsRequired();
+
+        builder.Property(x => x.Workstation)
+            .HasMaxLength(100);
+
+        builder.Property(x => x.RawMaterialLotNo)
+            .HasMaxLength(100);
+
+        // Production values
+        builder.Property(x => x.ExpectedQuantity)
+            .HasPrecision(18, 4)
+            .IsRequired();
+
+        builder.Property(x => x.ActualQuantity)
+            .HasPrecision(18, 4)
+            .IsRequired();
+
+        // Variance is computed in the entity, so ignore it
+        builder.Ignore(x => x.Variance);
+
+        builder.Property(x => x.UnitOfMeasure)
+            .IsRequired()
+            .HasMaxLength(20);
+
+        builder.Property(x => x.Comment)
+            .HasColumnType("text");
+
+        // Indexes
+        builder.HasIndex(x => x.WorkOrderId);
+
+        builder.HasIndex(x => x.WorkOrderStepId);
+
+        builder.HasIndex(x => x.WorkOrderMaterialId);
+
+        builder.HasIndex(x => x.ExecutedAt);
     }
 }

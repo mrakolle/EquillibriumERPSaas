@@ -1,8 +1,6 @@
-using EquillibriumERP.Manufacturing.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace EquillibriumERP.Manufacturing.Infrastructure.Configurations;
+using EquillibriumERP.Manufacturing.Domain.Entities;
 
 public class WorkOrderStepConfiguration : IEntityTypeConfiguration<WorkOrderStep>
 {
@@ -12,15 +10,30 @@ public class WorkOrderStepConfiguration : IEntityTypeConfiguration<WorkOrderStep
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Action)
-            .HasMaxLength(500)
+        builder.Property(x => x.WorkOrderId)
             .IsRequired();
 
-        builder.Property(x => x.Status)
-            .HasConversion<int>();
+        builder.Property(x => x.BOMProcessStepId)
+            .IsRequired();
+
+        builder.Property(x => x.WorkOrderMaterialId)
+            .IsRequired(false);
 
         builder.Property(x => x.StepNumber)
             .IsRequired();
+
+        builder.Property(x => x.Action)
+            .IsRequired()
+            .HasColumnType("text");
+
+        builder.Property(x => x.Status)
+            .IsRequired();
+
+        builder.Property(x => x.StartedAt);
+
+        builder.Property(x => x.CompletedAt);
+
+        // Relationships
 
         builder.HasOne(x => x.WorkOrder)
             .WithMany(x => x.Steps)
@@ -31,5 +44,16 @@ public class WorkOrderStepConfiguration : IEntityTypeConfiguration<WorkOrderStep
             .WithMany()
             .HasForeignKey(x => x.WorkOrderMaterialId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // Indexes
+
+        builder.HasIndex(x => x.WorkOrderId);
+
+        builder.HasIndex(x => x.BOMProcessStepId);
+
+        builder.HasIndex(x => x.WorkOrderMaterialId);
+
+        builder.HasIndex(x => new { x.WorkOrderId, x.StepNumber })
+            .IsUnique();
     }
 }

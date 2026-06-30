@@ -13,18 +13,16 @@ public class BOMStepMaterialConfiguration : IEntityTypeConfiguration<BOMStepMate
         builder.Property(x => x.BOMStepId)
             .IsRequired();
 
-        builder.Property(x => x.Quantity)
-            .HasPrecision(18, 4);
-
         builder.Property(x => x.RawMaterialProductId)
             .IsRequired();
 
-        builder.HasOne<BOMStep>()
-            .WithMany()
-            .HasForeignKey(x => x.BOMStepId)
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.Property(x => x.Quantity)
+            .HasPrecision(18, 4)
+            .IsRequired();
 
+        // Indexes (important for execution + lookup)
         builder.HasIndex(x => x.BOMStepId);
+
         builder.HasIndex(x => x.RawMaterialProductId);
     }
 }

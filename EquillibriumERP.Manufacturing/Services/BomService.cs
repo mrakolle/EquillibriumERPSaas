@@ -81,7 +81,7 @@ public class BomService : IBomService
 
             // 🔥 MATERIAL MAPPING (THIS IS THE FIX)
             RawMaterialProductId = request.RawMaterialProductId,
-            QuantityPercentage = request.QuantityPercentage,
+            QuantityPercentage = request.QuantityPercentage / 100m,
 
             Status = StepStatus.Pending
         };

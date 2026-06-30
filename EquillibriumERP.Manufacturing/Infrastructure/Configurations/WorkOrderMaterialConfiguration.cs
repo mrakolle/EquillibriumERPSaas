@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using EquillibriumERP.Manufacturing.Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace EquillibriumERP.Manufacturing.Infrastructure.Configurations;
+using EquillibriumERP.Manufacturing.Domain.Entities;
 
 public class WorkOrderMaterialConfiguration : IEntityTypeConfiguration<WorkOrderMaterial>
 {
@@ -12,22 +10,39 @@ public class WorkOrderMaterialConfiguration : IEntityTypeConfiguration<WorkOrder
 
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.WorkOrderId)
+            .IsRequired();
+
+        builder.Property(x => x.RawMaterialProductId)
+            .IsRequired();
+
         builder.Property(x => x.ExpectedQuantity)
-            .HasPrecision(18, 4);
+            .HasPrecision(18, 4)
+            .IsRequired();
 
         builder.Property(x => x.IssuedQuantity)
-            .HasPrecision(18, 4);
+            .HasPrecision(18, 4)
+            .IsRequired();
 
         builder.Property(x => x.ConsumedQuantity)
-            .HasPrecision(18, 4);
+            .HasPrecision(18, 4)
+            .IsRequired();
 
         builder.Property(x => x.UnitOfMeasure)
-            .HasMaxLength(20)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(20);
+
+        // Relationship
 
         builder.HasOne(x => x.WorkOrder)
             .WithMany(x => x.Materials)
             .HasForeignKey(x => x.WorkOrderId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        // Indexes
+
+        builder.HasIndex(x => x.WorkOrderId);
+
+        builder.HasIndex(x => x.RawMaterialProductId);
     }
 }
