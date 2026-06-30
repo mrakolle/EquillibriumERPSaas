@@ -1,10 +1,11 @@
+using System.Data;
 using System.Threading;
-using EquillibriumERP.Core.Abstractions.Modules;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.Data;
+using EquillibriumERP.Core.Abstractions.Modules;
+using EquillibriumERP.Quality.Infrastructure.Persistence;
 
 namespace EquillibriumERP.Quality;
 

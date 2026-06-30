@@ -1,43 +1,50 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Configuration;
+using EquillibriumERP.Core.Identity.Domain.Entities;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace EquillibriumERP.Core.Identity.Auth;
 
-public class JwtTokenService
+public sealed class JwtTokenService
 {
-    private readonly IConfiguration _config;
+    private readonly JwtOptions _options;
 
-    public JwtTokenService(IConfiguration config)
+    public JwtTokenService(IOptions<JwtOptions> options)
     {
-        _config = config;
+        _options = options.Value;
     }
 
-    public string CreateToken(Guid userId, Guid tenantId, string email)
+    public string CreateToken(ApplicationUser user, string tenantId, string tenantCode, string schema)
     {
+        Console.WriteLine("=== JWT OPTIONS ===");
+        Console.WriteLine($"Issuer: '{_options.Issuer}'");
+        Console.WriteLine($"Audience: '{_options.Audience}'");
+        Console.WriteLine($"SigningKey: '{_options.SigningKey}'");
+        Console.WriteLine("=== END JWT OPTIONS ===");
+        var claims = new List<Claim>
+        {
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
+
+            new("tenant_id", tenantId),
+            new("tenant_code", tenantCode),
+            new("schema", schema),
+
+            new("user_id", user.Id.ToString())
+        };
+
         var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_config["Jwt:Key"]!)
-        );
+            Encoding.UTF8.GetBytes(_options.SigningKey));
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var claims = new[]
-        {
-            new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
-            new Claim("tenant_id", tenantId.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, email),
-            new Claim("permission", "products.view"), // Hardcoded Temporarily
-            new Claim("permission", "products.create"), // Hardcoded Temporarily
-            new Claim("permission", "products.delete"), // Hardcoded Temporarily
-        };
-
         var token = new JwtSecurityToken(
-            issuer: _config["Jwt:Issuer"],
-            audience: _config["Jwt:Audience"],
+            issuer: _options.Issuer,
+            audience: _options.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddHours(2),
+            expires: DateTime.UtcNow.AddMinutes(_options.ExpiryMinutes),
             signingCredentials: creds
         );
 

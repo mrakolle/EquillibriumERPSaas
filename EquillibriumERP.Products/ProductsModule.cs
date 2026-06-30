@@ -1,15 +1,20 @@
 using System.Data;
 using System.Threading;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using EquillibriumERP.Core.Abstractions.Modules;
 using EquillibriumERP.Core.Abstractions;
+using EquillibriumERP.Core.Abstractions.MultiTenancy;
 using EquillibriumERP.Core.Abstractions.Products;
-using EquillibriumERP.Products.Application.Interfaces;
+using EquillibriumERP.Products.Auth;
+using EquillibriumERP.Products.Interfaces;
 using EquillibriumERP.Products.Infrastructure.Endpoints;
 using EquillibriumERP.Products.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using EquillibriumERP.Products.Endpoints;
 
 namespace EquillibriumERP.Products;
 
@@ -28,6 +33,7 @@ public class ProductsModule : IModule
         services.AddScoped<IProductService, ProductService>();
         services.AddSingleton<IModulePermissionProvider,ProductsPermissionProvider>();
         services.AddScoped<IProductLookup, ProductLookupService>();
+        services.AddScoped<IRawMaterialSeeder, RawMaterialSeederService>();
     }
 
     public void RegisterModel(
@@ -37,8 +43,13 @@ public class ProductsModule : IModule
 
     public void MapEndpoints(WebApplication app)
     {
+        var group = app.MapGroup("/products")
+            .WithTags("Products")
+            .RequireAuthorization();
         ProductProvisioningEndpoints
-            .MapProductProvisioningEndpoints(app);
+            .MapProductProvisioningEndpoints(group);
+        SeedDataEndpoints
+            .MapSeedDataEndpoints(group);
     }
     public async Task MigrateAsync(
         IServiceProvider services,

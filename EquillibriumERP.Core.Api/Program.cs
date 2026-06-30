@@ -7,11 +7,13 @@ using EquillibriumERP.Core.Api.Middleware;
 using EquillibriumERP.Core.Infrastructure.DependencyInjection;
 using EquillibriumERP.Core.Abstractions.Modules;
 using EquillibriumERP.Core.Abstractions.MultiTenancy;
+using EquillibriumERP.Core.Infrastructure.Persistence;
 using EquillibriumERP.Core.Infrastructure.MultiTenancy;
 using EquillibriumERP.Core.Identity.Auth;
 using Microsoft.AspNetCore.Authorization;
+using EquillibriumERP.ControlPlane.Interfaces;
+using EquillibriumERP.ControlPlane.Services;
 using EquillibriumERP.Core.Infrastructure.Authorization;
-
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +24,7 @@ var configuration = builder.Configuration;
 // =====================================================
 
 //builder.Services.AddControlPlane();
+
 
 builder.Services.AddControllers();
 
@@ -68,38 +71,48 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // =====================================================
-// JWT AUTHENTICATION/ AUTHORIZATION
+// JWT AUTHENTICATION / AUTHORIZATION
 // =====================================================
 
 var jwt = configuration.GetSection("Jwt");
 
-var key = Encoding.UTF8.GetBytes(jwt["Key"]!);
+var issuer = jwt["Issuer"]
+    ?? throw new InvalidOperationException("JWT Issuer is missing from configuration.");
+
+var audience = jwt["Audience"]
+    ?? throw new InvalidOperationException("JWT Audience is missing from configuration.");
+
+var signingKey = jwt["SigningKey"]
+    ?? throw new InvalidOperationException("JWT SigningKey is missing from configuration.");
+
+if (string.IsNullOrWhiteSpace(signingKey))
+    throw new InvalidOperationException("JWT SigningKey cannot be empty.");
+
+var key = Encoding.UTF8.GetBytes(signingKey);
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters =
-            new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
 
-                ValidIssuer = jwt["Issuer"],
-                ValidAudience = jwt["Audience"],
+            ValidIssuer = issuer,
+            ValidAudience = audience,
 
-                IssuerSigningKey =
-                    new SymmetricSecurityKey(key)
-            };
+            IssuerSigningKey = new SymmetricSecurityKey(key)
+        };
     });
 
 builder.Services.AddAuthorization();
 
 // Permission-based authorization (ERP layer)
-builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
-builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
+/*builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+builder.Services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();*/
 
 // Optional: clean extension hook (if you added it earlier)
 // builder.Services.AddPermissionAuthorization();

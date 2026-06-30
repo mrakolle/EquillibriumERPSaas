@@ -13,7 +13,7 @@ public class PurchaseOrderLine
 
     public decimal LineTotal { get; set; }
 
-    public decimal QuantityReceived { get; set; }   // ✅ NEW
+    public decimal QuantityReceived { get; set; }  
 
     public decimal QuantityOutstanding =>
         Quantity - QuantityReceived;

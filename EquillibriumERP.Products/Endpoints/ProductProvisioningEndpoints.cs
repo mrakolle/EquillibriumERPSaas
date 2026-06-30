@@ -5,19 +5,16 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using EquillibriumERP.Core.Infrastructure.Authorization;
 using EquillibriumERP.Products.Infrastructure;
-using EquillibriumERP.Products.Application.DTOs;
-using EquillibriumERP.Products.Application.Interfaces;
+using EquillibriumERP.Products.Contracts;
+using EquillibriumERP.Products.Interfaces;
 
 namespace EquillibriumERP.Products.Infrastructure.Endpoints;
 
 public static class ProductProvisioningEndpoints
 {
-    public static void MapProductProvisioningEndpoints(this WebApplication app)
+    public static void MapProductProvisioningEndpoints(RouteGroupBuilder group)
     {
-        var group = app.MapGroup("/products")
-            .WithTags("Products")
-            .RequireAuthorization();
-
+    
         MapCreateProduct(group);
         MapGetProductsById(group);
         MapGetAllProducts(group);
@@ -32,8 +29,8 @@ public static class ProductProvisioningEndpoints
             var result = await service.GetAllAsync();
 
             return Results.Ok(result);
-        })
-        .RequireAuthorization("products.view");
+        });
+        //.RequireAuthorization("products.view");
     }
 
     private static void MapGetProductsById(RouteGroupBuilder group)
@@ -52,14 +49,14 @@ public static class ProductProvisioningEndpoints
     private static void MapCreateProduct(RouteGroupBuilder group)
     {
        group.MapPost("/create", async (
-            [FromBody] CreateProductDto dto,
-            HttpContext ctx) =>
+            [FromBody] CreateProductRequest dto,
+            HttpContext ctx, CancellationToken ct) =>
         {
             var service = ctx.RequestServices.GetRequiredService<IProductService>();
-            var result = await service.CreateAsync(dto);
+            var result = await service.CreateAsync(dto,ct);
 
             return Results.Ok(result);
-        })
-        .RequireAuthorization("products.create");
+        });
+       //.RequireAuthorization("perm:products.create");
     }
 }

@@ -1,17 +1,20 @@
-using System.Data;
-using System.Threading;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
+using EquillibriumERP.Core.Abstractions;
+using EquillibriumERP.Core.Abstractions.MultiTenancy;
+using EquillibriumERP.Core.Abstractions.Identity;
+using EquillibriumERP.Core.Abstractions.Modules;
+using EquillibriumERP.Core.Identity.Endpoints;
+using EquillibriumERP.Core.Identity.Infrastructure;
+using EquillibriumERP.Core.Identity.Auth;
+using EquillibriumERP.Core.Identity.Services;
+using EquillibriumERP.Core.Identity.Domain.Entities;
+using EquillibriumERP.Core.Identity.Infrastructure.Services;
+using Microsoft.AspNetCore.Builder;
+using EquillibriumERP.Core.Abstractions.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using EquillibriumERP.Core.Abstractions.Modules;
-using EquillibriumERP.Core.Identity.Application.Services;
-using EquillibriumERP.Core.Identity.Domain.Entities;
-using EquillibriumERP.Core.Identity.Endpoints;
-using EquillibriumERP.Core.Identity.Application;
-using EquillibriumERP.Core.Identity.Infrastructure;
-using Microsoft.AspNetCore.Authorization;
 
 namespace EquillibriumERP.Core.Identity;
 
@@ -19,32 +22,52 @@ public class IdentityModule : IModule
 {
     public string Name => "Identity";
 
-    public void RegisterServices(
-        IServiceCollection services,
-        IConfiguration config)
+    public void RegisterServices(IServiceCollection services, IConfiguration config)
     {
-        Console.WriteLine("Registering IdentityModule services...");
-
-        services.AddSingleton<IModuleModelBuilder,
-            IdentityModelBuilder>();
-
         services.AddDbContext<IdentityDbContext>(options =>
-            options.UseNpgsql(config.GetConnectionString("TenantDatabase")!));
+            options.UseNpgsql(config.GetConnectionString("TenantDatabase")));
 
-        services.AddIdentity<ApplicationUser, ApplicationRole>()
+        services
+            .AddIdentityCore<ApplicationUser>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddRoles<ApplicationRole>()
             .AddEntityFrameworkStores<IdentityDbContext>()
+            .AddSignInManager()
             .AddDefaultTokenProviders();
 
-        services.AddScoped<AuthService>();
-        services.AddScoped<PermissionEngine>();
-        services.AddScoped<RoleService>();
-        services.AddScoped<UserService>();
+        services.AddScoped<IUserService, UserService>();
+
+        services.AddScoped<ITenantAuthenticationService, TenantAuthenticationService>();
+        //services.AddScoped<ITenantContextualizer, TenantContextualizer>();
+        services.AddScoped<JwtTokenService>();
 
         services.Configure<JwtOptions>(config.GetSection("Jwt"));
+        services.AddScoped<
+                    IPermissionService,
+                    UserPermissionService>();
+        services.AddSingleton<IModulePermissionProvider, IdentityPermissionProvider>();
+        //services.AddScoped<ITenantAdminUserService,TenantAdminUserService>();
+        //services.AddScoped<ITenantModuleSeeder, IdentitySeeder>();
+        services.AddScoped<IdentitySeeder>();
+
     }
 
     public void RegisterModel(ModelBuilder modelBuilder)
     {
+        // handled by DbContext configurations
+    }
+
+    public void MapEndpoints(WebApplication app)
+    {
+        var group = app.MapGroup("/")
+            .WithTags("Authentication");
+
+        AuthEndpoints.MapAuthEndpoints(group);
     }
 
     public async Task MigrateAsync(
@@ -52,28 +75,19 @@ public class IdentityModule : IModule
         string schema,
         CancellationToken cancellationToken)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
         var db = services.GetRequiredService<IdentityDbContext>();
 
-        var connection = db.Database.GetDbConnection();
-
-        if (connection.State != ConnectionState.Open)
-            await connection.OpenAsync(cancellationToken);
+        await db.Database.GetDbConnection().OpenAsync(cancellationToken);
 
         await db.Database.ExecuteSqlRawAsync(
             $"SET search_path TO \"{schema}\", public",
             cancellationToken);
 
         await db.Database.MigrateAsync(cancellationToken);
-    }
+        
+        // SEED AFTER MIGRATION
+        var seeder = services.GetRequiredService<IdentitySeeder>();
 
-    public void MapEndpoints(WebApplication app)
-    {
-        Console.WriteLine("Mapping IdentityModule endpoints...222");
-        AuthEndpoints.MapAuthEndpoints(app);
-        RoleEndpoints.MapRoleEndpoints(app);
-        //PermissionEndpoints.MapPermissionEndpoints(app);
-        UserEndpoints.MapUserEndpoints(app);
+        await seeder.SeedAsync(cancellationToken);
     }
 }

@@ -1,7 +1,7 @@
 using EquillibriumERP.Core.Identity.Domain.Entities;
 using EquillibriumERP.Core.Identity.Infrastructure;
 
-namespace EquillibriumERP.Core.Identity.Application.Services;
+namespace EquillibriumERP.Core.Identity.Services;
 
 public class PermissionService
 {

@@ -10,11 +10,11 @@ namespace EquillibriumERP.Inventory.Endpoints;
 public static class InventoryEndpoints
 {
     public static void MapInventoryEndpoints(
-        WebApplication app)
+        RouteGroupBuilder group)
     {
-        var group = app.MapGroup("/inventory");
+       // var group = app.MapGroup("/inventory");
 
-        group.MapGet("/items",
+        group.MapPost("/items",
             async (InventoryDbContext db) =>
             {
                 var items = await db.InventoryItems

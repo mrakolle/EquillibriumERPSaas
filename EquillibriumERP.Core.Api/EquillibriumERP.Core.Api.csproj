@@ -23,11 +23,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EquillibriumERP.ControlPlane\EquillibriumERP.ControlPlane.csproj" />
     <ProjectReference Include="..\EquillibriumERP.Core.Onboarding\EquillibriumERP.Core.Onboarding.csproj" />
     <ProjectReference Include="..\EquillibriumERP.Products\EquillibriumERP.Products.csproj" />
     <ProjectReference Include="..\EquillibriumERP.Purchasing\EquillibriumERP.Purchasing.csproj" />
     <ProjectReference Include="..\EquillibriumERP.Inventory\EquillibriumERP.Inventory.csproj" />
     <ProjectReference Include="..\EquillibriumERP.Sales\EquillibriumERP.Sales.csproj" />
+    <ProjectReference Include="..\EquillibriumERP.Manufacturing\EquillibriumERP.Manufacturing.csproj" />
     <ProjectReference Include="..\EquillibriumERP.Core.Infrastructure\EquillibriumERP.Core.Infrastructure.csproj" />
     <ProjectReference Include="..\EquillibriumERP.Core.Identity\EquillibriumERP.Core.Identity.csproj" />
     <ProjectReference Include="..\EquillibriumERP.Core.Abstractions\EquillibriumERP.Core.Abstractions.csproj" />

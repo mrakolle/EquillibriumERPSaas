@@ -5,16 +5,14 @@ public class EstimateItem
     public Guid Id { get; set; }
 
     public Guid EstimateId { get; set; }
+    public Estimate Estimate { get; set; } = null!;
 
     public Guid ProductId { get; set; }
-
     public string Description { get; set; } = string.Empty;
+    public decimal TaxRate { get; set; }
 
     public decimal Quantity { get; set; }
-
-    public decimal UnitPrice { get; set; }
-
-    public decimal TaxRate { get; set; }
+    public decimal UnitPrice { get; set; } // snapshot from Product
 }
 /*namespace EquillibriumERP.Sales.Domain.Entities;
 

@@ -41,11 +41,15 @@ public static class InfrastructureServiceRegistration
         {
             options.UseNpgsql(configuration.GetConnectionString("MasterDatabase"));
         });
+        
+
 
         // =====================================================
         // MULTI-TENANCY CORE SERVICES
         // =====================================================
         services.AddScoped<ITenantResolver, TenantResolver>();
+        services.AddScoped<ITenantContextualizer, TenantContextualizer>();
+        services.AddScoped<ITenantLookup, TenantLookup>();
         services.AddScoped<ITenantProvisioningService,TenantProvisioningService>();
         services.AddScoped<TenantProvisioningService>();
         services.AddScoped<TenantSchemaMigrator>();
@@ -77,7 +81,8 @@ public static class InfrastructureServiceRegistration
 
         services.AddScoped<ITenantDbContext>(provider =>
             provider.GetRequiredService<TenantDbContext>());
-
+            
+        
         return services;
     }
 }

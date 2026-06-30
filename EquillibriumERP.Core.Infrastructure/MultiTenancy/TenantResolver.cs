@@ -29,5 +29,4 @@ public class TenantResolver : ITenantResolver
 
         return $"tenant_{tenantId.Replace("-", "")}";
     }
-
 }

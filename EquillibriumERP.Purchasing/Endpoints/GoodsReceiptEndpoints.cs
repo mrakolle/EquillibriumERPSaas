@@ -1,17 +1,19 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using EquillibriumERP.Purchasing.Domain.Entities;
 using EquillibriumERP.Purchasing.Domain.Enums;
+using EquillibriumERP.Purchasing.Infrastructure.Persistence;
 
 namespace EquillibriumERP.Purchasing.Endpoints;
 
 public static class GoodsReceiptEndpoints
 {
-    public static void MapGoodsReceiptEndpoints(this WebApplication app)
+    public static void MapGoodsReceiptEndpoints(RouteGroupBuilder group)
     {
-        var group = app.MapGroup("/api/purchasing/goods-receipts")
-            .WithTags("Purchasing - Goods Receipts");
+       //var group = app.MapGroup("/api/purchasing/goods-receipts")
+        //    .WithTags("Purchasing - Goods Receipts");
 
         group.MapPost("/from-po/{purchaseOrderId:guid}", async (
             Guid purchaseOrderId,

@@ -1,9 +1,16 @@
 using System.Data;
 using Microsoft.AspNetCore.Builder;
-using EquillibriumERP.Core.Abstractions.Modules;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using EquillibriumERP.Core.Abstractions.Modules;
+using EquillibriumERP.Sales.Infrastructure.Persistence;
+using EquillibriumERP.Sales.Interfaces;
+using EquillibriumERP.Sales.Services;
+using EquillibriumERP.Core.Abstractions;
+using Microsoft.AspNetCore.Http;
+using EquillibriumERP.Sales.Endpoints;
+
 
 namespace EquillibriumERP.Sales;
 
@@ -18,6 +25,9 @@ public class SalesModule : IModule
         services.AddDbContext<SalesDbContext>(options =>
             options.UseNpgsql(
                 config.GetConnectionString("TenantDatabase")));
+
+        services.AddScoped<IEstimateService, EstimateService>();
+        services.AddScoped<ICustomerService, CustomerService>();
     }
 
     public void RegisterModel(ModelBuilder modelBuilder)
@@ -27,7 +37,15 @@ public class SalesModule : IModule
 
     public void MapEndpoints(WebApplication app)
     {
-        
+        var group = app.MapGroup("/sales")
+            .WithTags("Sales")
+            .RequireAuthorization();
+
+        EstimatesEndpoints
+            .MapEstimateEndpoints(group);
+
+        CustomersEndpoints
+            .MapCustomersEndpoints(group);
     }
     
     public async Task MigrateAsync(

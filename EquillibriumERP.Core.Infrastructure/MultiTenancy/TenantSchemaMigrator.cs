@@ -1,3 +1,58 @@
+using Microsoft.Extensions.DependencyInjection;
+using EquillibriumERP.Core.Abstractions.Modules;
+using Microsoft.Extensions.Configuration;
+using Npgsql;
+
+namespace EquillibriumERP.Core.Infrastructure.MultiTenancy;
+
+public class TenantSchemaMigrator
+{
+    private readonly IServiceProvider _serviceProvider;
+    private readonly IEnumerable<IModule> _modules;
+
+    public TenantSchemaMigrator(
+        IServiceProvider serviceProvider,
+        IEnumerable<IModule> modules)
+    {
+        _serviceProvider = serviceProvider;
+        _modules = modules;
+    }
+
+    public async Task MigrateAsync(string schema, CancellationToken cancellationToken)
+    {
+        using var scope = _serviceProvider.CreateScope();
+
+        foreach (var module in _modules
+            .Where(m => m.Name != "Onboarding")
+            .OrderBy(m => m.Name))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            Console.WriteLine($"➡ Migrating module: {module.Name}");
+
+            await using var conn = new NpgsqlConnection(
+                scope.ServiceProvider
+                    .GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>()
+                    .GetConnectionString("TenantDatabase"));
+
+            await conn.OpenAsync(cancellationToken);
+
+            await using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = $"SET search_path TO {schema}, public;";
+                await cmd.ExecuteNonQueryAsync(cancellationToken);
+            }
+
+            await module.MigrateAsync(scope.ServiceProvider, schema, cancellationToken);
+        }
+
+        Console.WriteLine($"✅ Tenant schema fully migrated: {schema}");
+    }
+    
+}
+
+// Old Class 1 changed 15 June 2026
+/*
 using System.Data;
 using EquillibriumERP.Core.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +92,7 @@ public class TenantSchemaMigrator
         Console.WriteLine($"✅ Tenant schema fully migrated: {schema}");
     }
 }
-
+*/
 
 /* Old class
 public class TenantSchemaMigrator

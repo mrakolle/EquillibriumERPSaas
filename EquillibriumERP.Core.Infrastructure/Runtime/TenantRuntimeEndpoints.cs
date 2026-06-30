@@ -14,19 +14,22 @@ public static class TenantRuntimeEndpoints
         .RequireAuthorization();
 
         app.MapPost("/runtime/tenant/switch/{tenantId:guid}", (
-            Guid tenantId,
-            ITenantSession session,
-            ITenantResolver resolver) =>
-        {
-            session.TenantId = tenantId;
-            resolver.SetTenant(tenantId.ToString());
+    Guid tenantId,
+    ITenantSession session,
+    ITenantResolver resolver) =>
+    {
+        resolver.SetTenant(tenantId.ToString());
 
-            return Results.Ok(new
-            {
-                message = "Tenant switched for current session",
-                tenantId,
-                schema = resolver.GetSchema()
-            });
+        var schema = resolver.GetSchema();
+
+        session.SetTenant(tenantId, schema);
+
+        return Results.Ok(new
+        {
+            message = "Tenant switched for current session",
+            tenantId,
+            schema
         });
+    });
     }
 }

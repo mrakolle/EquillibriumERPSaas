@@ -8,7 +8,7 @@ namespace EquillibriumERP.Core.Infrastructure.MultiTenancy;
 
 public class TenantProvisioningService : ITenantProvisioningService
 {
-    private readonly MasterDbContext _masterDb;
+   private readonly MasterDbContext _masterDb;
     private readonly TenantSchemaMigrator _migrator;
 
     public TenantProvisioningService(
@@ -18,6 +18,7 @@ public class TenantProvisioningService : ITenantProvisioningService
         _masterDb = masterDb;
         _migrator = migrator;
     }
+    
 
    public async Task<string> CreateTenantSchemaAsync(
     Guid tenantId,
@@ -36,8 +37,19 @@ public class TenantProvisioningService : ITenantProvisioningService
 
         // 2. RUN MODULE MIGRATIONS
         await _migrator.MigrateAsync(schema, cancellationToken);
+       
+        // 3. SEED ADMIN USER
+        Console.WriteLine("This is where Admin User for SCHEMA: " + schema + " must be created");
 
         return schema;
+    }
+
+    public async Task UpdateTenantSchemaAsync(
+    string schema,
+    CancellationToken cancellationToken)
+    {
+        Console.WriteLine("Updating " + schema + " Schema");
+        await _migrator.MigrateAsync(schema, cancellationToken);
     }
 }
 

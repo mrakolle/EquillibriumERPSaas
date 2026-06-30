@@ -11,14 +11,21 @@ public static class TenantSessionEndpoints
     public static void MapTenantSessionEndpoints(this WebApplication app)
     {
         app.MapPost("/session/tenant/{tenantId:guid}",
-        (Guid tenantId, [FromServices] ITenantSession tenantSession) =>
+        (Guid tenantId,
+        ITenantSession tenantSession,
+        ITenantResolver resolver) =>
         {
-            tenantSession.TenantId = tenantId;
+            resolver.SetTenant(tenantId.ToString());
+
+            var schema = resolver.GetSchema();
+
+            tenantSession.SetTenant(tenantId, schema);
 
             return Results.Ok(new
             {
                 Message = "Tenant session updated",
-                TenantId = tenantId
+                TenantId = tenantId,
+                Schema = schema
             });
         });
 

@@ -6,13 +6,11 @@ public class BillOfMaterialItem
 
     public Guid BillOfMaterialId { get; set; }
 
-    public Guid RawMaterialId { get; set; }
+    public Guid RawMaterialProductId { get; set; }
 
     public decimal Quantity { get; set; }
 
-    public string? Unit { get; set; }
-
-    public bool IsOptional { get; set; }
+    public string UnitOfMeasure { get; set; } = string.Empty;
 
     public BillOfMaterial BillOfMaterial { get; set; } = null!;
 }

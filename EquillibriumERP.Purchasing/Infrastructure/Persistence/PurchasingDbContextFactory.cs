@@ -1,0 +1,1 @@
+namespace EquillibriumERP.Purchasing.Infrastructure.Persistence;

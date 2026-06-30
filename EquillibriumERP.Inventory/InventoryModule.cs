@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using EquillibriumERP.Core.Abstractions.Modules;
@@ -7,6 +9,7 @@ using EquillibriumERP.Core.Abstractions.Inventory;
 using EquillibriumERP.Inventory.Services;
 using EquillibriumERP.Core.Abstractions;
 using EquillibriumERP.Inventory.Endpoints;
+using EquillibriumERP.Core.Abstractions.Modules;
 using EquillibriumERP.Core.Abstractions.MultiTenancy;
 
 namespace EquillibriumERP.Inventory;
@@ -34,8 +37,10 @@ public class InventoryModule : IModule
 
     public void MapEndpoints(WebApplication app)
     {
+        var group = app.MapGroup("/")
+            .WithTags("Inventory");
         InventoryEndpoints
-            .MapInventoryEndpoints(app);
+            .MapInventoryEndpoints(group);
     }
 
     public async Task MigrateAsync(

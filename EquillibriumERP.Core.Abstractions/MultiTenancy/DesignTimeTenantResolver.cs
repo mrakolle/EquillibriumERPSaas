@@ -21,4 +21,9 @@ public class DesignTimeTenantResolver : ITenantResolver
             ? "public"
             : $"tenant_{_tenantId:N}";
     }
+
+    public string GetSchema(string tenantCode)
+    {
+        throw new NotImplementedException();
+    }
 }

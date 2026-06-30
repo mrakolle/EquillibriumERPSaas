@@ -6,6 +6,12 @@ public interface ITenantProvisioningService
         Guid tenantId,
         string schema,
         CancellationToken cancellationToken = default);
+
+    Task UpdateTenantSchemaAsync(
+        string schema,
+        CancellationToken cancellationToken);
+
+    
 }
 
 /*public interface ITenantProvisioningService

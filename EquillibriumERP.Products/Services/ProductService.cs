@@ -1,51 +1,63 @@
 using EquillibriumERP.Core.Abstractions.MultiTenancy;
 using EquillibriumERP.Core.Abstractions.Persistence;
-using EquillibriumERP.Products.Application.DTOs;
-using EquillibriumERP.Products.Application.Interfaces;
+using EquillibriumERP.Products.Contracts;
+using EquillibriumERP.Products.Interfaces;
 using EquillibriumERP.Products.Domain.Entities;
 using EquillibriumERP.Products.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using EquillibriumERP.Core.Abstractions.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace EquillibriumERP.Products.Services;
 
 public class ProductService : IProductService
 {
-    private readonly ITenantDbContext _db;
+    private readonly ProductsDbContext _db;
     private readonly ITenantResolver _tenantResolver;
+    private readonly ITenantSession _tenantSession;
+    private readonly ITenantContextualizer _tenantContextualizer;
 
     public ProductService(
-        ITenantDbContext db,
-        ITenantResolver tenantResolver)
+        ProductsDbContext db,
+        ITenantResolver tenantResolver, ITenantContextualizer tenantContextualizer, ITenantSession tenantSession)
     {
         _db = db;
         _tenantResolver = tenantResolver;
+        _tenantContextualizer = tenantContextualizer;
+        _tenantSession = tenantSession;
+        
     }
 
-    public async Task<ProductDto> CreateAsync(CreateProductDto dto)
+    public async Task<ProductDto> CreateAsync(
+    CreateProductRequest dto,
+    CancellationToken ct = default)
     {
-        EnsureTenantContext();
-
         var product = new Product(
             dto.ProductCode,
             dto.Name,
-            ProductType.FinishedGoods,
+            dto.ProductType,
             dto.SellingPrice,
-            0,
+            0m,
             null,
             null
         );
 
+        if (!dto.IsActive)
+            product.Deactivate();
+
+        await _tenantContextualizer.SetTenantContextAsync(_db, ct);
+
         _db.Set<Product>().Add(product);
 
-        await _db.SaveChangesAsync();
+        await _db.SaveChangesAsync(ct);
 
         return Map(product);
     }
 
     public async Task<List<ProductDto>> GetAllAsync()
     {
-        EnsureTenantContext();
-
+        CancellationToken ct = default;
+        await _tenantContextualizer.SetTenantContextAsync(_db, ct);
         return await _db.Set<Product>()
             .AsNoTracking()
             .Select(p => Map(p))
@@ -54,7 +66,8 @@ public class ProductService : IProductService
 
     public async Task<ProductDto?> GetByIdAsync(Guid id)
     {
-        EnsureTenantContext();
+        CancellationToken ct = default;
+        await _tenantContextualizer.SetTenantContextAsync(_db, ct);
 
         var product = await _db.Set<Product>()
             .AsNoTracking()
@@ -67,9 +80,10 @@ public class ProductService : IProductService
 
     public async Task<ProductDto?> UpdateAsync(
         Guid id,
-        UpdateProductDto dto)
+        UpdateProductRequest dto)
     {
-        EnsureTenantContext();
+        CancellationToken ct = default;
+        await _tenantContextualizer.SetTenantContextAsync(_db, ct);
 
         var product = await _db.Set<Product>()
             .FirstOrDefaultAsync(x => x.Id == id);
@@ -94,7 +108,8 @@ public class ProductService : IProductService
 
     public async Task<bool> DeleteAsync(Guid id)
     {
-        EnsureTenantContext();
+        CancellationToken ct = default;
+        await _tenantContextualizer.SetTenantContextAsync(_db, ct);
 
         var product = await _db.Set<Product>()
             .FirstOrDefaultAsync(x => x.Id == id);
@@ -127,6 +142,7 @@ public class ProductService : IProductService
             product.Id,
             product.ProductCode,
             product.Name,
+            product.ProductType,
             product.SellingPrice,
             product.IsActive
         );
