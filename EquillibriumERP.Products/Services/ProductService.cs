@@ -3,7 +3,7 @@ using EquillibriumERP.Core.Abstractions.Persistence;
 using EquillibriumERP.Products.Contracts;
 using EquillibriumERP.Products.Interfaces;
 using EquillibriumERP.Products.Domain.Entities;
-using EquillibriumERP.Products.Domain.Enums;
+using EquillibriumERP.Core.Abstractions.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using EquillibriumERP.Core.Abstractions.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -32,22 +32,26 @@ public class ProductService : IProductService
     CreateProductRequest dto,
     CancellationToken ct = default)
     {
+        await _tenantContextualizer.SetTenantContextAsync(_db, ct);
+
         var product = new Product(
             dto.ProductCode,
             dto.Name,
             dto.ProductType,
             dto.SellingPrice,
-            0m,
-            null,
-            null
+            dto.CostPrice,
+            dto.ProductCategoryId,
+            dto.CasNumber,
+            dto.Description
+            
+            
+            
         );
 
         if (!dto.IsActive)
             product.Deactivate();
 
-        await _tenantContextualizer.SetTenantContextAsync(_db, ct);
-
-        _db.Set<Product>().Add(product);
+        _db.Products.Add(product);
 
         await _db.SaveChangesAsync(ct);
 
@@ -80,9 +84,9 @@ public class ProductService : IProductService
 
     public async Task<ProductDto?> UpdateAsync(
         Guid id,
-        UpdateProductRequest dto)
+        UpdateProductRequest dto, CancellationToken ct = default)
     {
-        CancellationToken ct = default;
+        
         await _tenantContextualizer.SetTenantContextAsync(_db, ct);
 
         var product = await _db.Set<Product>()
@@ -92,14 +96,20 @@ public class ProductService : IProductService
             return null;
 
         product.Update(
-            product.ProductCode,
-            dto.Name,
-            product.ProductType,
-            dto.SellingPrice,
-            product.CostPrice,
-            product.ProductCategoryId,
-            product.Description
-        );
+        dto.Name,
+        dto.ProductCode,
+        dto.ProductType,
+        dto.ProductCategoryId,
+        dto.SellingPrice,
+        dto.CostPrice,
+        dto.CasNumber,
+        dto.Description
+    );
+
+        if (dto.IsActive)
+            product.Activate();
+        else
+        product.Deactivate();
 
         await _db.SaveChangesAsync();
 
@@ -139,12 +149,14 @@ public class ProductService : IProductService
     private static ProductDto Map(Product product)
     {
         return new ProductDto(
-            product.Id,
-            product.ProductCode,
-            product.Name,
-            product.ProductType,
-            product.SellingPrice,
-            product.IsActive
-        );
+        product.Id,
+        product.ProductCode,
+        product.Name,
+        product.CasNumber,
+        product.Description,
+        product.ProductType,
+        product.SellingPrice,
+        product.IsActive
+    );
     }
 }

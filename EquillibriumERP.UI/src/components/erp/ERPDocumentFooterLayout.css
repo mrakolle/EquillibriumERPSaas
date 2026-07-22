@@ -1,0 +1,25 @@
+.erp-document-footer-layout{
+
+    display:grid;
+
+    grid-template-columns:1fr 360px;
+
+    gap:32px;
+
+    align-items:start;
+
+    margin-top:24px;
+
+}
+
+.erp-document-footer-left{
+
+    min-width:0;
+
+}
+
+.erp-document-footer-right{
+
+    min-width:320px;
+
+}

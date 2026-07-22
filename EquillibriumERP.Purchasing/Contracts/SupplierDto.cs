@@ -1,11 +1,18 @@
 
 namespace EquillibriumERP.Purchasing.Contracts;
+
 public record SupplierDto(
     Guid Id,
-    string Name,
     string SupplierCode,
-    string? ContactPerson,
+    string Name,
+    Guid? SupplierCategoryId,
+    string? RegistrationNumber,
+    string? VatNumber,
+    string? TaxNumber,
     string? Email,
-    string? PhoneNumber,
+    string? Phone,
+    string? Mobile,
+    string? Website,
+    int PaymentTerms,
     bool IsActive
-    );
+);

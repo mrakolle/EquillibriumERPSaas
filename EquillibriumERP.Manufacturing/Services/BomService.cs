@@ -14,13 +14,16 @@ public class BomService : IBomService
 {
     private readonly ManufacturingDbContext _db;
     private readonly ITenantContextualizer _tenantContextualizer;
+    private readonly IProductLookup _productLookup;
 
     public BomService(
         ManufacturingDbContext db,
-        ITenantContextualizer tenantContextualizer)
+        ITenantContextualizer tenantContextualizer,
+        IProductLookup productLookup)
     {
         _db = db;
         _tenantContextualizer = tenantContextualizer;
+        _productLookup = productLookup;
     }
 
     public async Task<Guid> CreateAsync(CreateBomRequest request, CancellationToken ct)
@@ -32,7 +35,7 @@ public class BomService : IBomService
             Id = Guid.NewGuid(),
             ProductId = request.ProductId,
             Code = request.Code,
-            Name = request.Name,
+            Name = $"BOM-{request.Code}",
             Description = request.Description,
             IsActive = true
         };
@@ -76,7 +79,7 @@ public class BomService : IBomService
 
             StepNumber = request.StepNumber,
             Description = request.Description,
-            DurationMinutes = request.DurationMinutes,
+            Duration = request.Duration,
             Type = request.Type,
 
             // 🔥 MATERIAL MAPPING (THIS IS THE FIX)
@@ -131,15 +134,41 @@ public class BomService : IBomService
     {
         await _tenantContextualizer.SetTenantContextAsync(_db, ct);
 
-        return await _db.BillOfMaterials
+        var boms = await _db.BillOfMaterials
             .Include(x => x.Items)
-            .Select(b => new BomDto
+            .ToListAsync(ct);
+
+        var products = new Dictionary<Guid, ProductLookupResult>();
+
+        foreach (var bom in boms)
+        {
+            var product = await _productLookup.GetByIdAsync(
+                bom.ProductId,
+                ct);
+
+            if (product != null)
+            {
+                products[bom.ProductId] = product;
+            }
+        }
+
+        return boms.Select(b =>
+        {
+            var product = products.TryGetValue(
+                b.ProductId,
+                out var value)
+                    ? value
+                    : null;
+
+            return new BomDto
             {
                 Id = b.Id,
                 ProductId = b.ProductId,
                 Code = b.Code,
-                Name = b.Name,
+                Name = product?.Name ?? "",
                 Description = b.Description,
+                IsActive = b.IsActive,
+
                 Items = b.Items.Select(i => new BomItemDto
                 {
                     Id = i.Id,
@@ -147,32 +176,148 @@ public class BomService : IBomService
                     Quantity = i.Quantity,
                     UnitOfMeasure = i.UnitOfMeasure
                 }).ToList()
-            })
-            .ToListAsync(ct);
+            };
+        }).ToList();
     }
     public async Task<BomDto?> GetByIdAsync(Guid id, CancellationToken ct)
     {
         await _tenantContextualizer.SetTenantContextAsync(_db, ct);
 
-        return await _db.BillOfMaterials
+        var bom = await _db.BillOfMaterials
             .Include(x => x.Items)
-            .Where(b => b.Id == id)
-            .Select(b => new BomDto
-            {
-                Id = b.Id,
-                ProductId = b.ProductId,
-                Code = b.Code,
-                Name = b.Name,
-                Description = b.Description,
-                Items = b.Items.Select(i => new BomItemDto
+            .Include(x => x.Steps)
+            .FirstOrDefaultAsync(x => x.Id == id, ct);;
+
+        if (bom == null)
+            return null;
+
+        var product = await _productLookup.GetByIdAsync(
+            bom.ProductId,
+            ct);
+    var rawMaterialLookups = new Dictionary<Guid, ProductLookupResult>();
+
+    foreach (var item in bom.Items)
+    {
+        if (rawMaterialLookups.ContainsKey(item.RawMaterialProductId))
+            continue;
+
+        var rawMaterial = await _productLookup.GetByIdAsync(
+            item.RawMaterialProductId,
+            ct);
+
+        if (rawMaterial != null)
+        {
+            rawMaterialLookups[item.RawMaterialProductId] = rawMaterial;
+        }
+    }
+
+        var dto = new BomDto
+        {
+            Id = bom.Id,
+            ProductId = bom.ProductId,
+            Code = bom.Code,
+            Name = product?.Name ?? "",
+            Description = bom.Description,
+
+            Items = bom.Items
+                .Select(i => new BomItemDto
                 {
                     Id = i.Id,
                     RawMaterialProductId = i.RawMaterialProductId,
+                    RawMaterialName =
+                        rawMaterialLookups.TryGetValue(
+                            i.RawMaterialProductId,
+                            out var material)
+                                ? material.Name
+                                : "",
+
                     Quantity = i.Quantity,
                     UnitOfMeasure = i.UnitOfMeasure
-                }).ToList()
+                })
+                .ToList(),
+
+            Steps = bom.Steps
+            .OrderBy(s => s.StepNumber)
+            .Select(s => new BOMStepDto
+            {
+                Id = s.Id,
+                StepNumber = s.StepNumber,
+                Description = s.Description,
+                Duration = s.Duration,
+                Type = s.Type,
+                RawMaterialProductId = s.RawMaterialProductId,
+                RawMaterialName = s.RawMaterialProductId != null &&
+                            rawMaterialLookups.TryGetValue(
+                                s.RawMaterialProductId.Value,
+                                out var material)
+                ? material.Name
+                : null,
+                QuantityPercentage = s.QuantityPercentage
             })
-            .FirstOrDefaultAsync(ct);
+            .ToList()
+        };
+        
+
+        foreach (var item in dto.Items)
+        {
+            Console.WriteLine(
+                $"DTO => {item.RawMaterialName} | {item.Quantity} | {item.UnitOfMeasure}");
+        }
+
+        return dto;
+    }
+    public async Task UpdateAsync(
+    Guid id,
+    UpdateBomRequest request,
+    CancellationToken ct)
+    {
+        await _tenantContextualizer.SetTenantContextAsync(_db, ct);
+
+       var bom = await _db.BillOfMaterials
+        .Include(x => x.Items)
+        .Include(x => x.Steps)
+        .FirstOrDefaultAsync(x => x.Id == id, ct);
+
+        if (bom is null)
+            throw new InvalidOperationException("Bill of Material not found.");
+
+        bom.ProductId = request.ProductId;
+        bom.Code = request.Code;
+        bom.Description = request.Description;
+        bom.IsActive = request.IsActive;
+
+        _db.BillOfMaterialItems.RemoveRange(bom.Items);
+        _db.BOMSteps.RemoveRange(bom.Steps);
+
+        foreach (var item in request.Items)
+        {
+            _db.BillOfMaterialItems.Add(new BillOfMaterialItem
+            {
+                Id = Guid.NewGuid(),
+                BillOfMaterialId = bom.Id,
+                RawMaterialProductId = item.RawMaterialProductId,
+                Quantity = item.Quantity,
+                UnitOfMeasure = item.UnitOfMeasure
+            });
+        }
+        foreach (var step in request.Steps)
+        {
+            _db.BOMSteps.Add(new BOMStep
+            {
+                Id = Guid.NewGuid(),
+                BillOfMaterialId = bom.Id,
+
+                StepNumber = step.StepNumber,
+                Description = step.Description,
+                Duration = step.Duration,
+                Type = step.Type,
+
+                RawMaterialProductId = step.RawMaterialProductId,
+                QuantityPercentage = step.QuantityPercentage
+            });
+        }
+
+        await _db.SaveChangesAsync(ct);
     }
     public async Task<Guid> RecordConsumptionAsync(
     Guid stepId,

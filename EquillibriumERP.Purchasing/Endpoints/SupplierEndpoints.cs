@@ -1,56 +1,95 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.EntityFrameworkCore;
-using EquillibriumERP.Purchasing.Domain.Entities;
+
 using EquillibriumERP.Purchasing.Contracts;
-using Microsoft.Extensions.DependencyInjection;
 using EquillibriumERP.Purchasing.Interfaces;
 
 namespace EquillibriumERP.Purchasing.Endpoints;
 
 public static class SupplierEndpoints
 {
-    public static void MapSupplierEndpoints(RouteGroupBuilder app)
+    public static void MapSupplierEndpoints(RouteGroupBuilder group)
     {
-        //app.MapGroup("/api/purchasing/suppliers");
+        MapCreateSupplier(group);
+        MapGetAllSuppliers(group);
+        MapGetSupplierById(group);
+        MapUpdateSupplier(group);
+        //MapDeleteSupplier(group);
+    }
 
-        app.MapPost("/Suppliers/New", async (
-            CreateSupplierRequest dto,
-            HttpContext ctx,
+    private static void MapCreateSupplier(RouteGroupBuilder group)
+    {
+        group.MapPost("/suppliers/create", async (
+            CreateSupplierRequest request,
+            ISupplierService service,
             CancellationToken ct) =>
         {
-            {
-            var service = ctx.RequestServices.GetRequiredService<ISupplierService>();
-            var result = await service.CreateAsync(dto,ct);
+            var supplier = await service.CreateAsync(request, ct);
 
-            return Results.Ok(result);
+            return Results.Ok(supplier);
+        });
+    }
+
+    private static void MapGetAllSuppliers(RouteGroupBuilder group)
+    {
+        group.MapGet("/suppliers/get-all", async (
+            ISupplierService service) =>
+        {
+            var suppliers = await service.GetAllAsync();
+
+            return Results.Ok(suppliers);
+        });
+    }
+
+    private static void MapGetSupplierById(RouteGroupBuilder group)
+    {
+        group.MapGet("/suppliers/get-by/{id:guid}", async (
+            Guid id,
+            ISupplierService service) =>
+        {
+            var supplier = await service.GetByIdAsync(id);
+
+            if (supplier is null)
+            {
+                return Results.NotFound();
             }
+
+            return Results.Ok(supplier);
         });
     }
+
+    private static void MapUpdateSupplier(RouteGroupBuilder group)
+    {
+        group.MapPut("/suppliers/update/{id:guid}", async (
+            Guid id,
+            UpdateSupplierRequest request,
+            ISupplierService service) =>
+        {
+            var supplier = await service.UpdateAsync(id, request);
+
+            if (supplier is null)
+            {
+                return Results.NotFound();
+            }
+
+            return Results.Ok(supplier);
+        });
+    }
+
+    /*
+    private static void MapDeleteSupplier(RouteGroupBuilder group)
+    {
+        group.MapDelete("/suppliers/delete/{id:guid}", async (
+            Guid id,
+            ISupplierService service) =>
+        {
+            var deleted = await service.DeleteAsync(id);
+
+            return deleted
+                ? Results.Ok()
+                : Results.NotFound();
+        });
+    }
+    */
 }
-
-           /* var supplier = new Supplier
-            {
-                Id = Guid.NewGuid(),
-                SupplierCode = request.SupplierCode,
-                Name = request.Name,
-                Email = request.Email,
-                PhoneNumber = request.PhoneNumber,
-                ContactPerson = request.ContactPerson,
-                IsActive = true
-            };
-
-            db.Suppliers.Add(supplier);
-            await db.SaveChangesAsync(ct);
-
-            return Results.Ok(new SupplierResponse
-            {
-                Id = supplier.Id,
-                SupplierCode = supplier.SupplierCode,
-                Name = supplier.Name,
-                IsActive = supplier.IsActive
-            });
-        });
-    }
-}*/

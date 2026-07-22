@@ -19,15 +19,22 @@ public class SalesModule : IModule
     public string Name => "Sales";
 
     public void RegisterServices(
-        IServiceCollection services,
-        IConfiguration config)
+    IServiceCollection services,
+    IConfiguration config)
     {
         services.AddDbContext<SalesDbContext>(options =>
             options.UseNpgsql(
                 config.GetConnectionString("TenantDatabase")));
 
         services.AddScoped<IEstimateService, EstimateService>();
+
         services.AddScoped<ICustomerService, CustomerService>();
+
+        services.AddScoped<ICustomerCategoryService, CustomerCategoryService>();
+
+        services.AddScoped<ICustomerAddressService, CustomerAddressService>();
+
+        services.AddScoped<ICustomerContactService, CustomerContactService>();
     }
 
     public void RegisterModel(ModelBuilder modelBuilder)
@@ -44,8 +51,18 @@ public class SalesModule : IModule
         EstimatesEndpoints
             .MapEstimateEndpoints(group);
 
-        CustomersEndpoints
-            .MapCustomersEndpoints(group);
+        CustomerEndpoints
+            .MapCustomerEndpoints(group);
+        
+        CustomerCategoryEndpoints
+            .MapCustomerCategoryEndpoints(group);
+
+        CustomerAddressEndpoints
+            .MapCustomerAddressEndpoints(group);
+
+        CustomerContactEndpoints
+            .MapCustomerContactEndpoints(group);
+        
     }
     
     public async Task MigrateAsync(

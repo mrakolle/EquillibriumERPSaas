@@ -13,12 +13,13 @@ public static class OnboardingEndpoints
         var group = app.MapGroup("/onboarding");
 
         group.MapPost("/tenants", async (
-            string tenantName,
+            CreateTenantRequest request,
             ITenantOnboardingService service,
             CancellationToken ct) =>
         {
-            var tenantId = await service.OnboardTenantAsync(tenantName, ct);
-            return Results.Ok(new { tenantId });
+            var result = await service.OnboardTenantAsync(request, ct);
+
+            return Results.Ok(result);
         });
     }
 }

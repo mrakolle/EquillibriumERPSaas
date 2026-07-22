@@ -1,0 +1,58 @@
+.erp-dropdown{
+
+    position:relative;
+
+    display:inline-block;
+
+}
+
+.erp-dropdown-menu{
+
+    position:absolute;
+
+    top:calc(100% + 8px);
+
+    right:0;
+
+    min-width:240px;
+
+    background:#ffffff;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:16px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 18px 40px rgba(15,23,42,.12);
+
+    z-index:1000;
+
+}
+
+.erp-dropdown-menu button{
+
+    width:100%;
+
+    padding:14px 18px;
+
+    border:none;
+
+    background:#ffffff;
+
+    text-align:left;
+
+    font-size:.95rem;
+
+    cursor:pointer;
+
+    transition:background .15s ease;
+
+}
+
+.erp-dropdown-menu button:hover{
+
+    background:#f8fafc;
+
+}

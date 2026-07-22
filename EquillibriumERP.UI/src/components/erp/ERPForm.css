@@ -1,0 +1,102 @@
+.erp-form{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,minmax(0,1fr));
+
+    gap:20px 24px;
+
+    width:100%;
+
+    align-items:start;
+
+}
+
+.erp-form>*{
+
+    min-width:0;
+
+}
+
+.erp-form-full{
+
+    grid-column:1 / -1;
+
+}
+
+.erp-form-row{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,minmax(0,1fr));
+
+    gap:20px;
+
+}
+
+@media (max-width:900px){
+
+    .erp-form{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .erp-form-full{
+
+        grid-column:auto;
+
+    }
+
+    .erp-form-row{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+
+
+
+/*.erp-form{
+
+    display:grid;
+
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+
+    gap:20px 24px;
+
+    width:100%;
+
+    align-items:start;
+
+}
+
+.erp-form > *{
+
+    min-width:0;
+
+}
+
+.erp-form-full{
+
+    grid-column:1 / -1;
+
+}
+
+@media (max-width:900px){
+
+    .erp-form{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .erp-form-full{
+
+        grid-column:auto;
+
+    }
+
+}*/

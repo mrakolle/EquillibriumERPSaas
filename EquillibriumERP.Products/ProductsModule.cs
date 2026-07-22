@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using EquillibriumERP.Products.Endpoints;
+using EquillibriumERP.Products.Infrastructure.Seeders;
 
 namespace EquillibriumERP.Products;
 
@@ -33,7 +34,9 @@ public class ProductsModule : IModule
         services.AddScoped<IProductService, ProductService>();
         services.AddSingleton<IModulePermissionProvider,ProductsPermissionProvider>();
         services.AddScoped<IProductLookup, ProductLookupService>();
-        services.AddScoped<IRawMaterialSeeder, RawMaterialSeederService>();
+        services.AddScoped<ITenantModuleSeeder, RawMaterialSeederService>();
+        services.AddScoped<ITenantModuleSeeder, ProductCategorySeeder>();
+        services.AddScoped<IProductCategoryService, ProductCategoryService>();
     }
 
     public void RegisterModel(

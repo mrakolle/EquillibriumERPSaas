@@ -1,0 +1,74 @@
+@import "./variables.css";
+@import "./layout.css";
+
+.features {
+    padding: 100px 0;
+}
+
+.features-header {
+    text-align: center;
+    margin-bottom: 64px;
+}
+
+.features-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 16px;
+}
+
+.features-subtitle {
+    max-width: 720px;
+    margin: 0 auto;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--color-text-light);
+}
+
+.feature-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+
+    box-shadow: var(--shadow-md);
+
+    transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+}
+
+.feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+}
+
+.feature-icon {
+    width: 64px;
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 24px;
+
+    border-radius: var(--radius-md);
+
+    background: rgba(56, 189, 248, 0.12);
+    color: var(--color-secondary);
+}
+
+.feature-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+
+    color: var(--color-primary);
+
+    margin-bottom: 12px;
+}
+
+.feature-description {
+    color: var(--color-text-light);
+    line-height: 1.7;
+}

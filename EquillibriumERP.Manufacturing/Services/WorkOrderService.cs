@@ -13,16 +13,140 @@ public class WorkOrderService : IWorkOrderService
 {
      private readonly ManufacturingDbContext _db;
     private readonly ITenantContextualizer _tenantContextualizer;
+   private readonly IProductLookup _productLookup;
 
     public WorkOrderService(
         ManufacturingDbContext dbContext,
-        ITenantContextualizer tenantContextualizer)
+        ITenantContextualizer tenantContextualizer,
+        IProductLookup productLookup)
     {
         _db = dbContext;
         _tenantContextualizer = tenantContextualizer;
+        _productLookup = productLookup;
     }
 
     public async Task<Guid> CreateWorkOrderAsync(
+    CreateWorkOrderRequest request,
+    CancellationToken ct = default)
+    {
+        await _tenantContextualizer.SetTenantContextAsync(_db, ct);
+
+        var billOfMaterial = await GetBillOfMaterialAsync(
+            request.BillOfMaterialId,
+            ct);
+
+        var workOrder = CreateWorkOrder(
+            billOfMaterial,
+            request);
+
+        await CreateWorkOrderMaterialsAsync(
+            workOrder,
+            billOfMaterial,
+            request,
+            ct);
+
+        CreateWorkOrderSteps(
+            workOrder,
+            billOfMaterial);
+
+        _db.WorkOrders.Add(workOrder);
+
+        await _db.SaveChangesAsync(ct);
+
+        return workOrder.Id;
+    }
+
+    private async Task<BillOfMaterial> GetBillOfMaterialAsync(
+    Guid billOfMaterialId,
+    CancellationToken ct)
+    {
+        var billOfMaterial = await _db.BillOfMaterials
+            .Include(x => x.Steps)
+            .FirstOrDefaultAsync(
+                x => x.Id == billOfMaterialId,
+                ct);
+
+        if (billOfMaterial == null)
+            throw new Exception("Bill Of Material not found.");
+
+        return billOfMaterial;
+    }
+
+    private static WorkOrder CreateWorkOrder(
+    BillOfMaterial billOfMaterial,
+    CreateWorkOrderRequest request)
+    {
+        return new WorkOrder
+        {
+            Id = Guid.NewGuid(),
+            BillOfMaterialId = billOfMaterial.Id,
+            PlannedQuantity = request.PlannedQuantity,
+            UnitOfMeasure = request.UnitOfMeasure,
+            Status = WorkOrderStatus.Draft,
+
+            Materials = new List<WorkOrderMaterial>(),
+            Steps = new List<WorkOrderStep>()
+        };
+    }
+
+    private async Task CreateWorkOrderMaterialsAsync(
+    WorkOrder workOrder,
+    BillOfMaterial billOfMaterial,
+    CreateWorkOrderRequest request,
+    CancellationToken ct)
+    {
+        var bomMaterials = await _db.BOMSteps
+            .Where(x => x.BillOfMaterialId == billOfMaterial.Id)
+            .ToListAsync(ct);
+
+        foreach (var bomStep in bomMaterials)
+        {
+            if (bomStep.RawMaterialProductId == null)
+                continue;
+
+            workOrder.Materials.Add(new WorkOrderMaterial
+            {
+                Id = Guid.NewGuid(),
+                WorkOrderId = workOrder.Id,
+                RawMaterialProductId = bomStep.RawMaterialProductId.Value,
+                ExpectedQuantity =
+                    request.PlannedQuantity * bomStep.QuantityPercentage,
+                UnitOfMeasure = request.UnitOfMeasure
+            });
+        }
+    }
+
+    private static void CreateWorkOrderSteps(
+    WorkOrder workOrder,
+    BillOfMaterial billOfMaterial)
+    {
+        foreach (var bomStep in billOfMaterial.Steps.OrderBy(x => x.StepNumber))
+        {
+            var material = workOrder.Materials
+                .FirstOrDefault(x =>
+                    x.RawMaterialProductId == bomStep.RawMaterialProductId);
+
+            workOrder.Steps.Add(new WorkOrderStep
+            {
+                Id = Guid.NewGuid(),
+                WorkOrderId = workOrder.Id,
+
+                BOMProcessStepId = bomStep.Id,
+
+                StepNumber = bomStep.StepNumber,
+                Action = bomStep.Description,
+
+                Status = StepStatus.Pending,
+
+                WorkOrderMaterialId = material?.Id
+            });
+        }
+    }
+
+
+
+
+    /*public async Task<Guid> CreateWorkOrderAsync(
     CreateWorkOrderRequest request,
     CancellationToken ct = default)
     {
@@ -101,6 +225,151 @@ public class WorkOrderService : IWorkOrderService
         await _db.SaveChangesAsync(ct);
 
         return workOrder.Id;
+    }*/
+    public async Task<List<WorkOrderDto>> GetAllAsync(
+    CancellationToken ct = default)
+    {
+        await _tenantContextualizer.SetTenantContextAsync(_db, ct);
+
+        var workOrders = await _db.WorkOrders
+            .Include(x => x.BillOfMaterial)
+            .Include(x => x.Materials)
+            .Include(x => x.Steps)
+            .ToListAsync(ct);
+
+        var result = new List<WorkOrderDto>();
+
+        foreach (var workOrder in workOrders)
+        {
+            result.Add(await MapToDtoAsync(workOrder, ct));
+        }
+
+        return result;
+    }
+
+    private async Task<WorkOrderDto> MapToDtoAsync(
+    WorkOrder workOrder,
+    CancellationToken ct)
+    {
+        var product = await _productLookup.GetByIdAsync(
+            workOrder.BillOfMaterial.ProductId,
+            ct);
+
+        return new WorkOrderDto(
+            workOrder.Id,
+            workOrder.Id.ToString()[..8],
+            workOrder.BillOfMaterialId,
+            product?.Name ?? "Unknown Product",
+            workOrder.PlannedQuantity,
+            workOrder.UnitOfMeasure,
+            workOrder.Status,
+            MapMaterials(workOrder),
+            await MapStepsAsync(workOrder, ct)
+        );
+    }
+
+    private static List<WorkOrderMaterialDto> MapMaterials(
+    WorkOrder workOrder)
+    {
+        return workOrder.Materials
+            .Select(m => new WorkOrderMaterialDto(
+                m.Id,
+                m.RawMaterialProductId,
+                m.ExpectedQuantity,
+                m.UnitOfMeasure))
+            .ToList();
+    }
+
+    private async Task<List<WorkOrderStepDto>> MapStepsAsync(
+    WorkOrder workOrder,
+    CancellationToken ct)
+    {
+        var steps = new List<WorkOrderStepDto>();
+
+        var bomSteps = await _db.BOMSteps
+            .Where(x => x.BillOfMaterialId == workOrder.BillOfMaterialId)
+            .ToDictionaryAsync(x => x.Id, ct);
+
+        Console.WriteLine($"Loaded {bomSteps.Count} BOM Steps");
+
+        foreach (var step in workOrder.Steps.OrderBy(x => x.StepNumber))
+        {
+            WorkOrderMaterial? material = null;
+
+            if (step.WorkOrderMaterialId.HasValue)
+            {
+                material = workOrder.Materials
+                    .FirstOrDefault(x => x.Id == step.WorkOrderMaterialId.Value);
+            }
+
+            var found = bomSteps.TryGetValue(
+                step.BOMProcessStepId,
+                out var bomStep);
+
+            /*Console.WriteLine("--------------------------------");
+            Console.WriteLine($"Step Number        : {step.StepNumber}");
+            Console.WriteLine($"BOMProcessStepId   : {step.BOMProcessStepId}");
+            Console.WriteLine($"Found BOM Step     : {found}");
+            Console.WriteLine($"BOM Duration       : {(found ? bomStep!.Duration : TimeSpan.Zero)}");
+            Console.WriteLine($"Material Id        : {material?.RawMaterialProductId}");*/
+
+            string? materialName = null;
+
+            if (material != null)
+            {
+                var product = await _productLookup.GetByIdAsync(
+                    material.RawMaterialProductId,
+                    ct);
+
+                materialName = product?.Name;
+
+                Console.WriteLine($"Material Name      : {materialName}");
+            }
+
+            TimeSpan? actualDuration = null;
+
+            if (step.StartedAt.HasValue &&
+                step.CompletedAt.HasValue)
+            {
+                actualDuration =
+                    step.CompletedAt.Value - step.StartedAt.Value;
+            }
+
+            steps.Add(
+                new WorkOrderStepDto(
+                    step.Id,
+                    step.StepNumber,
+                    step.Action,
+                    found ? bomStep!.Duration : null,
+                    actualDuration,
+                    materialName,
+                    material?.ExpectedQuantity,
+                    0m,
+                    material?.UnitOfMeasure,
+                    step.Status
+                ));
+        }
+
+        return steps;
+    }
+    public async Task<WorkOrderDto?> GetByIdAsync(
+    Guid id,
+    CancellationToken ct = default)
+    {
+        await _tenantContextualizer.SetTenantContextAsync(_db, ct);
+
+        var workOrder = await _db.WorkOrders
+            .Include(x => x.BillOfMaterial)
+            .Include(x => x.Materials)
+            .Include(x => x.Steps)
+            .FirstOrDefaultAsync(x => x.Id == id, ct);
+
+        if (workOrder == null)
+        {
+            return null;
+        }
+
+        return await MapToDtoAsync(workOrder, ct);
     }
     public async Task StartWorkOrderAsync(
     Guid workOrderId,
@@ -118,27 +387,19 @@ public class WorkOrderService : IWorkOrderService
         if (workOrder.Status != WorkOrderStatus.Draft)
             throw new Exception("Only Draft WorkOrders can be started.");
 
-        // 🔷 Move WorkOrder into execution state
+        if (!workOrder.Steps.Any())
+            throw new Exception("WorkOrder has no steps.");
+
+        // Move Work Order into execution state
         workOrder.Status = WorkOrderStatus.InProgress;
 
-        // 🔷 Reset all steps to Pending (safe baseline)
+        // Reset all steps to Pending
         foreach (var step in workOrder.Steps)
         {
             step.Status = StepStatus.Pending;
             step.StartedAt = null;
             step.CompletedAt = null;
         }
-
-        // 🔷 Activate FIRST step only
-        var firstStep = workOrder.Steps
-            .OrderBy(x => x.StepNumber)
-            .FirstOrDefault();
-
-        if (firstStep == null)
-            throw new Exception("WorkOrder has no steps.");
-
-        firstStep.Status = StepStatus.InProgress;
-        firstStep.StartedAt = DateTime.UtcNow;
 
         await _db.SaveChangesAsync(ct);
     }
@@ -156,6 +417,9 @@ public class WorkOrderService : IWorkOrderService
 
         if (workOrder == null)
             throw new Exception("WorkOrder not found.");
+
+        if (workOrder.Status == WorkOrderStatus.Completed)
+            throw new Exception("WorkOrder has already been completed.");
 
         if (workOrder.Status != WorkOrderStatus.InProgress)
             throw new Exception("WorkOrder is not in progress.");

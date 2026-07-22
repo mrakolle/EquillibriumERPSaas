@@ -16,8 +16,9 @@ public static class BillOfMaterialsEndpoints
         //MapGetExpecteBomMaterialQuantity(group);
         //MapConsumeStepMaterial(group);
         //MapGetBomVariance(group);
-        //MapGetAllBoms(group);
-        //MapGetBomById(group);
+        MapGetAllBoms(group);
+        MapGetBomById(group);
+        MapUpdateBom(group);
     }
 
     private static void MapCreateBom(RouteGroupBuilder group)
@@ -113,6 +114,20 @@ public static class BillOfMaterialsEndpoints
             return result is null
                 ? Results.NotFound()
                 : Results.Ok(result);
+        });
+    }
+
+    private static void MapUpdateBom(RouteGroupBuilder group)
+    {
+        group.MapPut("/bom/{id:guid}", async (
+            Guid id,
+            UpdateBomRequest request,
+            IBomService service,
+            CancellationToken ct) =>
+        {
+            await service.UpdateAsync(id, request, ct);
+
+            return Results.NoContent();
         });
     }
 }

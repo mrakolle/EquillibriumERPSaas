@@ -13,8 +13,8 @@ public static class WorkOrderEndpoints
     public static void MapWorkOrderEndpoints(RouteGroupBuilder group)
     {
         MapCreate(group);
-        //MapGetAll(group);
-        //MapGetById(group);
+        MapGetAll(group);
+        MapGetById(group);
         MapStartWorkOrder(group);
         MapStartStep(group);
         MapExecuteStep(group);
@@ -37,24 +37,30 @@ public static class WorkOrderEndpoints
     // ---------------- GET ALL ----------------
     private static void MapGetAll(RouteGroupBuilder group)
     {
-        /*group.MapGet("/workorders", async (
+        group.MapGet("/workorders/GetAll", async (
             IWorkOrderService service,
             CancellationToken ct) =>
         {
-            return await service.GetAllAsync(ct);
-        });*/
+            var result = await service.GetAllAsync(ct);
+
+            return Results.Ok(result);
+        });
     }
 
     // ---------------- GET BY ID ----------------
     private static void MapGetById(RouteGroupBuilder group)
     {
-        /*group.MapGet("/workorders/{id:guid}", async (
+        group.MapGet("/workorders/{id:guid}", async (
             Guid id,
             IWorkOrderService service,
             CancellationToken ct) =>
         {
-            return await service.GetByIdAsync(id, ct);
-        });*/
+            var result = await service.GetByIdAsync(id, ct);
+
+            return result is null
+                ? Results.NotFound()
+                : Results.Ok(result);
+        });
     }
 
     // ---------------- START STEP ----------------

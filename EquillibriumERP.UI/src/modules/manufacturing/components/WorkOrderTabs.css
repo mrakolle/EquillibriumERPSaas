@@ -1,0 +1,9 @@
+.erp-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.erp-tabs button.active {
+    font-weight: 600;
+}

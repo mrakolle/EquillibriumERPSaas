@@ -20,7 +20,7 @@ public class BOMStepConfiguration : IEntityTypeConfiguration<BOMStep>
             .IsRequired()
             .HasColumnType("text");
 
-        builder.Property(x => x.DurationMinutes)
+        builder.Property(x => x.Duration)
             .IsRequired();
 
         builder.Property(x => x.Type)

@@ -1,0 +1,52 @@
+@import "./variables.css";
+@import "./layout.css";
+
+.cta {
+    padding: 120px 0;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--color-primary),
+            var(--color-secondary)
+        );
+
+    color: #FFFFFF;
+}
+
+.cta-inner {
+    text-align: center;
+}
+
+.cta-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.cta-text {
+    max-width: 760px;
+    margin: 0 auto 48px;
+
+    font-size: 1.2rem;
+    line-height: 1.8;
+
+    opacity: .95;
+}
+
+.cta-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.cta .btn-outline {
+    background: transparent;
+    border: 2px solid #FFFFFF;
+    color: #FFFFFF;
+}
+
+.cta .btn-outline:hover {
+    background: #FFFFFF;
+    color: var(--color-primary);
+}

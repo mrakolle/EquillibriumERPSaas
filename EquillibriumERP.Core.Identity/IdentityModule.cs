@@ -43,7 +43,6 @@ public class IdentityModule : IModule
         services.AddScoped<IUserService, UserService>();
 
         services.AddScoped<ITenantAuthenticationService, TenantAuthenticationService>();
-        //services.AddScoped<ITenantContextualizer, TenantContextualizer>();
         services.AddScoped<JwtTokenService>();
 
         services.Configure<JwtOptions>(config.GetSection("Jwt"));
@@ -51,8 +50,6 @@ public class IdentityModule : IModule
                     IPermissionService,
                     UserPermissionService>();
         services.AddSingleton<IModulePermissionProvider, IdentityPermissionProvider>();
-        //services.AddScoped<ITenantAdminUserService,TenantAdminUserService>();
-        //services.AddScoped<ITenantModuleSeeder, IdentitySeeder>();
         services.AddScoped<IdentitySeeder>();
 
     }
@@ -88,6 +85,8 @@ public class IdentityModule : IModule
         // SEED AFTER MIGRATION
         var seeder = services.GetRequiredService<IdentitySeeder>();
 
-        await seeder.SeedAsync(cancellationToken);
+       await seeder.SeedAsync(
+            schema: null,
+            ct: cancellationToken);
     }
 }

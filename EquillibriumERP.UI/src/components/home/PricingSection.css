@@ -1,0 +1,285 @@
+/* ==========================================================
+   PRICING SECTION
+========================================================== */
+
+.pricing{
+    padding:90px 0;
+    background:
+        radial-gradient(circle at top right,#dbeafe 0%,transparent 30%),
+        radial-gradient(circle at bottom left,#eef8ff 0%,transparent 30%),
+        linear-gradient(180deg,#f8fbff,#ffffff);
+}
+
+.pricing-header{
+    text-align:center;
+    margin-bottom:60px;
+}
+
+.pricing-title{
+    font-size:2.4rem;
+    font-weight:700;
+    color:#0f172a;
+    margin-bottom:12px;
+}
+
+.pricing-subtitle{
+    max-width:720px;
+    margin:auto;
+    color:#64748b;
+    line-height:1.7;
+}
+
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.pricing-table-container{
+    display:flex;
+    justify-content:center;
+    overflow:auto;
+}
+
+.pricing-table{
+
+    width:min(1200px,96%);
+
+    border-collapse:separate;
+    border-spacing:0;
+
+    background:white;
+
+    border-radius:24px;
+
+    overflow:hidden;
+
+    border:1px solid #e5e7eb;
+
+    box-shadow:
+        0 30px 70px rgba(15,23,42,.08),
+        0 10px 25px rgba(15,23,42,.05);
+
+}
+
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+.pricing-table thead th{
+
+    padding:24px;
+
+    background:#fbfcfe;
+
+    border-bottom:1px solid #e5e7eb;
+}
+
+.feature-column{
+
+    width:320px;
+
+    text-align:left;
+}
+
+
+/* ==========================================================
+   PLAN CARD
+========================================================== */
+
+.plan-card{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:8px;
+}
+
+.plan-name{
+
+    font-size:1rem;
+
+    font-weight:700;
+
+    color:#0f172a;
+}
+
+.plan-price{
+
+    font-size:1.45rem;
+
+    font-weight:700;
+
+    color:#2563eb;
+}
+
+.popular-badge{
+
+    padding:5px 14px;
+
+    border-radius:999px;
+
+    background:#2563eb;
+
+    color:white;
+
+    font-size:.68rem;
+
+    font-weight:700;
+
+    letter-spacing:.05em;
+}
+
+
+/* ==========================================================
+   FEATURED COLUMN
+========================================================== */
+
+.featured{
+
+    background:#f4f8ff;
+}
+
+thead .featured{
+
+    background:
+        linear-gradient(
+            180deg,
+            #eff6ff,
+            #ffffff
+        );
+
+    border-left:3px solid #2563eb;
+
+    border-right:3px solid #2563eb;
+}
+
+tbody td.featured{
+
+    border-left:3px solid #2563eb;
+
+    border-right:3px solid #2563eb;
+}
+
+.action-row td.featured{
+
+    border-left:3px solid #2563eb;
+
+    border-right:3px solid #2563eb;
+
+    border-bottom:3px solid #2563eb;
+}
+
+
+/* ==========================================================
+   BODY
+========================================================== */
+
+.pricing-table td{
+
+    padding:14px 18px;
+
+    text-align:center;
+
+    border-bottom:1px solid #edf2f7;
+
+    font-size:.92rem;
+}
+
+.feature-name{
+
+    text-align:left;
+
+    padding-left:34px;
+
+    font-weight:500;
+
+    color:#334155;
+}
+
+
+/* ==========================================================
+   GROUP HEADERS
+========================================================== */
+
+.category-row td{
+
+    background:#f8fafc;
+
+    text-align:left;
+
+    font-weight:700;
+
+    color:#0f172a;
+
+    text-transform:uppercase;
+
+    letter-spacing:.08em;
+
+    font-size:.78rem;
+
+    padding:12px 18px;
+
+    border-top:2px solid #dbeafe;
+}
+
+
+/* ==========================================================
+   HOVER
+========================================================== */
+
+tbody tr:not(.category-row):hover{
+
+    background:#fafcff;
+}
+
+
+/* ==========================================================
+   ICONS
+========================================================== */
+
+.check{
+
+    color:#16a34a;
+
+    font-size:1rem;
+
+    font-weight:700;
+}
+
+.dash{
+
+    color:#d1d5db;
+}
+
+
+/* ==========================================================
+   BUTTONS
+========================================================== */
+
+.action-row td{
+
+    padding:22px;
+}
+
+.action-row .btn{
+
+    width:100%;
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media(max-width:1100px){
+
+    .pricing-table{
+
+        min-width:980px;
+    }
+
+}

@@ -1,16 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using EquillibriumERP.Products.Interfaces;
 using EquillibriumERP.Products.Domain.Entities;
-using EquillibriumERP.Products.Domain.Enums;
+using EquillibriumERP.Core.Abstractions.Domain.Enums;
 using EquillibriumERP.Products.Infrastructure.Seeders;
 using EquillibriumERP.Core.Abstractions.MultiTenancy;
 
 namespace EquillibriumERP.Products.Services;
 
-public sealed class RawMaterialSeederService : IRawMaterialSeeder
+public sealed class RawMaterialSeederService : ITenantModuleSeeder
 {
+    public int Order => 30;
+
+    public string Name => "Raw Materials";
+
     private readonly ProductsDbContext _db;
     private readonly ITenantContextualizer _tenantContextualizer;
+
     public RawMaterialSeederService(
         ProductsDbContext db,
         ITenantContextualizer tenantContextualizer)
@@ -23,39 +28,45 @@ public sealed class RawMaterialSeederService : IRawMaterialSeeder
     string? schema,
     CancellationToken ct)
     {
-        
+        //Set TenantContext
         if (!string.IsNullOrWhiteSpace(schema))
         {
-            Console.WriteLine("Seeding RawMaterials During Onborading for : " + schema);
-            await _db.Database.OpenConnectionAsync(ct);
-
-            await _db.Database.ExecuteSqlRawAsync(
-                $"SET search_path TO \"{schema}\", public",
+            await _tenantContextualizer.SetProvisioningTenantContextAsync(
+                _db,
+                schema,
                 ct);
         }
         else
         {
-            Console.WriteLine("Seeding RawMaterials for active tenants");
-            await _tenantContextualizer.SetTenantContextAsync(_db, ct);
+            await _tenantContextualizer.SetTenantContextAsync(
+                _db,
+                ct);
         }
+
+        // Load all Raw Material categories once
+        var categories = await _db.ProductCategories
+            .Where(x => x.ProductType == ProductType.RawMaterial)
+            .ToDictionaryAsync(x => x.Name, x => x.Id, ct);
 
         foreach (var material in RawMaterialCatalog.Materials)
         {
-            var exists = await _db.Products
-                .AnyAsync(x => x.ProductCode == material.ProductCode, ct);
-
-            if (exists)
+            if (await _db.Products.AnyAsync(x => x.ProductCode == material.ProductCode, ct))
                 continue;
+
+            if (!categories.TryGetValue(material.Category, out var categoryId))
+                throw new InvalidOperationException(
+                    $"Raw Material category '{material.Category}' does not exist.");
 
             _db.Products.Add(
                 new Product(
-                    material.ProductCode,
-                    material.ProductName,
-                    ProductType.RawMaterial,
-                    0m,
-                    0m
-                )
-            );
+                    productCode: material.ProductCode,
+                    name: material.Name,
+                    productType: ProductType.RawMaterial,
+                    sellingPrice: 0m,
+                    costPrice: 0m,
+                    productCategoryId: categoryId,
+                    casNumber: material.CasNumber
+                ));
         }
 
         await _db.SaveChangesAsync(ct);

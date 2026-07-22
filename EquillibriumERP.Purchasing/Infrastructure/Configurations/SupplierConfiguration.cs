@@ -2,7 +2,7 @@ using EquillibriumERP.Purchasing.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace EquillibriumERP.Purchasing.Infrastructure.Configurations;
+namespace EquillibriumERP.Purchasing.Infrastructure.Persistence.Configurations;
 
 public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
 {
@@ -13,20 +13,46 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.SupplierCode)
-            .HasMaxLength(50)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(20);
 
         builder.Property(x => x.Name)
-            .HasMaxLength(200)
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(x => x.RegistrationNumber)
+            .HasMaxLength(100);
+
+        builder.Property(x => x.VatNumber)
+            .HasMaxLength(100);
+
+        builder.Property(x => x.TaxNumber)
+            .HasMaxLength(100);
 
         builder.Property(x => x.Email)
-            .HasMaxLength(150);
+            .HasMaxLength(256);
 
-        builder.Property(x => x.PhoneNumber)
+        builder.Property(x => x.Phone)
             .HasMaxLength(50);
 
-        builder.Property(x => x.IsActive)
+        builder.Property(x => x.Mobile)
+            .HasMaxLength(50);
+
+        builder.Property(x => x.Website)
+            .HasMaxLength(256);
+
+        builder.Property(x => x.PaymentTerms)
             .IsRequired();
+
+        builder.Property(x => x.IsActive)
+            .HasDefaultValue(true);
+
+        builder.HasIndex(x => x.SupplierCode)
+            .IsUnique();
+
+        builder.HasOne(x => x.SupplierCategory)
+            .WithMany()
+            .HasForeignKey(x => x.SupplierCategoryId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

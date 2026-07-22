@@ -1,0 +1,103 @@
+.erp-table-container{
+
+    width:100%;
+
+    overflow-x:auto;
+
+    border:1px solid var(--erp-border);
+
+    border-radius:12px;
+
+    background:#ffffff;
+
+}
+
+.erp-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    table-layout:auto;
+
+}
+
+.erp-table thead{
+
+    background:#f8fafc;
+
+}
+
+.erp-table th{
+
+    padding:12px 16px;
+
+    text-align:left;
+
+    font-size:.85rem;
+
+    font-weight:700;
+
+    color:var(--erp-text);
+
+    border-bottom:1px solid var(--erp-border);
+
+    white-space:nowrap;
+
+}
+
+.erp-table td{
+
+    padding:10px 16px;
+
+    font-size:.9rem;
+
+    color:var(--erp-text);
+
+    border-bottom:1px solid #eef2f7;
+
+    vertical-align:middle;
+
+}
+
+.erp-table tbody tr{
+
+    transition:background-color .15s ease;
+
+}
+
+.erp-table tbody tr:hover{
+
+    background:#f8fbff;
+
+}
+
+.erp-table tbody tr:last-child td{
+
+    border-bottom:none;
+
+}
+
+.erp-table-number{
+
+    text-align:right;
+
+    font-variant-numeric:tabular-nums;
+
+}
+
+.erp-table-center{
+
+    text-align:center;
+
+}
+
+.erp-table-actions{
+
+    width:1%;
+
+    white-space:nowrap;
+
+    text-align:right;
+
+}

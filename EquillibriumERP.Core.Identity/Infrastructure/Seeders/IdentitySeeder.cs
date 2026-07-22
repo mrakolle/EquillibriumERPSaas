@@ -9,15 +9,19 @@ namespace EquillibriumERP.Core.Identity;
 public sealed class IdentitySeeder : ITenantModuleSeeder
 {
     private readonly IdentityDbContext _db;
+     public string Name => "Identity";
+     public int Order => 100;
 
     public IdentitySeeder(IdentityDbContext db)
     {
         _db = db;
     }
 
-    public int Order => 100;
+    
 
-    public async Task SeedAsync(CancellationToken ct = default)
+    public async Task SeedAsync(
+    string? schema = null,
+    CancellationToken ct = default)
     {
         await SeedRolesAsync(ct);
         await SeedAdminUserAsync(ct);

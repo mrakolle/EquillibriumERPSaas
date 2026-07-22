@@ -107,11 +107,6 @@ namespace EquillibriumERP.Manufacturing.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
 

@@ -1,13 +1,21 @@
-using EquillibriumERP.Sales.Contracts.Customers;
+using EquillibriumERP.Sales.Contracts;
 
 namespace EquillibriumERP.Sales.Interfaces;
+
 public interface ICustomerService
 {
-    Task<CustomerDto> CreateAsync(
-        CreateCustomerRequest request,
-        CancellationToken ct);
+    Task<List<CustomerDto>> GetAllAsync();
 
-    Task<CustomerDto?> GetByIdAsync(
+    Task<CustomerDetailDto?> GetByIdAsync(Guid id);
+
+    Task<CustomerDetailDto> CreateAsync(
+        CreateCustomerRequest dto,
+        CancellationToken ct = default);
+
+    Task<CustomerDetailDto?> UpdateAsync(
         Guid id,
-        CancellationToken ct);
+        UpdateCustomerRequest dto,
+        CancellationToken ct = default);
+
+    Task<bool> DeleteAsync(Guid id);
 }

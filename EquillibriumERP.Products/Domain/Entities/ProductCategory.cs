@@ -1,3 +1,5 @@
+using EquillibriumERP.Core.Abstractions.Domain.Enums;
+
 namespace EquillibriumERP.Products.Domain.Entities;
 
 public class ProductCategory
@@ -6,21 +8,36 @@ public class ProductCategory
 
     public string Name { get; private set; } = null!;
 
-    public string Description { get; private set; } = string.Empty;
+    public ProductType ProductType { get; private set; }
 
-    public ICollection<Product> Products { get; private set; }
-        = new List<Product>();
+    public string? Description { get; private set; }
+
+    public bool IsActive { get; private set; } = true;
+
+    public ICollection<Product> Products { get; private set; } = new List<Product>();
 
     private ProductCategory() { }
 
     public ProductCategory(
         string name,
+        ProductType productType,
         string? description = null)
     {
         Id = Guid.NewGuid();
-
         Name = name;
-
-        Description = description ?? string.Empty;
+        ProductType = productType;
+        Description = description;
+        IsActive = true;
     }
+    public void Update(
+    string name,
+    ProductType productType,
+    string? description)
+    {
+        Name = name;
+        ProductType = productType;
+        Description = description;
+    }
+    public void Activate() => IsActive = true;
+    public void Deactivate() => IsActive = false;
 }

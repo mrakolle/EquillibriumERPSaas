@@ -1,0 +1,37 @@
+.erp-inline-checkbox{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-top:6px;
+
+}
+
+.erp-inline-checkbox input{
+
+    width:16px;
+
+    height:16px;
+
+    margin:0;
+
+    cursor:pointer;
+
+}
+
+.erp-inline-checkbox label{
+
+    margin:0;
+
+    font-size:.9rem;
+
+    font-weight:500;
+
+    color:var(--erp-text);
+
+    cursor:pointer;
+
+}

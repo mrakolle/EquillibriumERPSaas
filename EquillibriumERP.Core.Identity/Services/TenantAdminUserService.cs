@@ -15,8 +15,8 @@ public sealed class TenantAdminUserService : ITenantAdminUserService
     }
 
     public async Task CreateTenantAdminAsync(
+    CreateTenantRequest request,
     Guid tenantId,
-    string tenantCode,
     string schema,
     CancellationToken ct = default)
     {
@@ -30,12 +30,12 @@ public sealed class TenantAdminUserService : ITenantAdminUserService
         {
             Id = Guid.NewGuid(),
             TenantId = tenantId,
-            Email = $"admin@{tenantCode}.local",
-            UserName = $"admin@{tenantCode}.local",
-            NormalizedEmail = $"ADMIN@{tenantCode}.LOCAL",
-            NormalizedUserName = $"ADMIN@{tenantCode}.LOCAL",
-            FirstName = "System",
-            LastName = "Admin",
+            Email = request.Administrator.EmailAddress,
+            UserName = request.Administrator.EmailAddress,
+            NormalizedEmail = request.Administrator.EmailAddress.ToUpperInvariant(),
+            NormalizedUserName = request.Administrator.EmailAddress.ToUpperInvariant(),
+            FirstName = request.Administrator.FirstName,
+            LastName = string.Empty,
             IsActive = true
         };
 

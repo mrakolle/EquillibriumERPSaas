@@ -1,0 +1,33 @@
+.erp-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.erp-form-card {
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.erp-form-grid {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 16px;
+    align-items: center;
+}
+
+.erp-form-grid label {
+    font-weight: 600;
+}
+
+.erp-form-grid input,
+.erp-form-grid select,
+.erp-form-grid textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}

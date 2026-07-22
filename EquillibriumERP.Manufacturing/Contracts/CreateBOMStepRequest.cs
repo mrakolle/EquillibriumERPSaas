@@ -7,7 +7,7 @@ public class CreateBOMStepRequest
 
     public string Description { get; set; } = string.Empty;
 
-    public int DurationMinutes { get; set; }
+    public TimeSpan Duration { get; set; }
 
     public StepType Type { get; set; }
 

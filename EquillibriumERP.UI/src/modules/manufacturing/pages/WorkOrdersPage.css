@@ -1,0 +1,29 @@
+.erp-page {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.erp-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.erp-page-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.erp-page-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.erp-page-divider {
+    width: 100%;
+    height: 1px;
+    background-color: #d9d9d9;
+    margin-top: 12px;
+    margin-bottom: 20px;
+}

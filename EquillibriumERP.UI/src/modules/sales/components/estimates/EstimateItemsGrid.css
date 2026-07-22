@@ -1,0 +1,30 @@
+.estimate-items-grid th:nth-child(2),
+.estimate-items-grid td:nth-child(2) {
+    width: 90px;
+    
+}
+
+.estimate-items-grid th:nth-child(3),
+.estimate-items-grid td:nth-child(3) {
+    width: 150px;
+    
+}
+
+.estimate-items-grid th:nth-child(4),
+.estimate-items-grid td:nth-child(4),
+.estimate-items-grid th:nth-child(5),
+.estimate-items-grid td:nth-child(5) {
+    width: 85px;
+}
+
+.estimate-items-grid th:nth-child(6),
+.estimate-items-grid td:nth-child(6) {
+    width: 130px;
+    text-align: center;
+}
+
+.estimate-items-grid input,
+.estimate-items-grid select {
+    width: 100%;
+    box-sizing: border-box;
+}

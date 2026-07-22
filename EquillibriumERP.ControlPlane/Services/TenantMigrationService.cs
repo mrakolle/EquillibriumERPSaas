@@ -10,18 +10,16 @@ public class TenantMigrationService : ITenantMigrationService
     private readonly ControlPlaneDbContext _db;
     //private readonly IMasterDbContext _masterdb;
     private readonly IEnumerable<ITenantModuleSeeder> _seeders;
-    private readonly IRawMaterialSeeder _rawMaterialSeeders;
+    //private readonly IRawMaterialSeeder _rawMaterialSeeders;
 
     public TenantMigrationService(
     ControlPlaneDbContext db,
     ITenantProvisioningService provisioning,
-    IEnumerable<ITenantModuleSeeder> seeders,IRawMaterialSeeder rawMaterialSeeders)
+    IEnumerable<ITenantModuleSeeder> seeders)
     {
         _db = db;
-       // _masterdb = masterdb;
         _provisioning = provisioning;
         _seeders = seeders;
-        _rawMaterialSeeders = rawMaterialSeeders;
     }
 
     public async Task UpdateTenantSchemasAsync(CancellationToken ct)

@@ -29,8 +29,13 @@ public interface IBomService
         CancellationToken ct);
 
     Task<List<StepExpectedMaterialDto>> GetStepExpectedAsync(
-            Guid stepId, CancellationToken ct);
+        Guid stepId, CancellationToken ct);
 
     Task<StepVarianceDto> GetStepVarianceAsync(
         Guid stepId, CancellationToken ct);
+
+    Task UpdateAsync(
+        Guid id,
+        UpdateBomRequest request,
+        CancellationToken ct);
 }

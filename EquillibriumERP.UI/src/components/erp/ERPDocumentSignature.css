@@ -1,0 +1,45 @@
+.erp-document-signature {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 64px;
+
+    margin-top: 40px;
+
+}
+
+.erp-document-signature-block {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+}
+
+.erp-document-signature-line {
+
+    border-top: 1px solid #222;
+
+    margin-top: 32px;
+
+}
+
+.erp-document-signature-label {
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+.erp-document-signature-date {
+
+    font-size: 13px;
+
+    color: #666;
+
+}

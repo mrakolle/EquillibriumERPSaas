@@ -1,0 +1,43 @@
+.erp-document-banking-details{
+
+    margin-top:32px;
+
+}
+
+.erp-document-banking-details h3{
+
+    margin-bottom:16px;
+
+    font-size:16px;
+
+    color:var(--erp-primary);
+
+}
+
+.erp-document-banking-details table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.erp-document-banking-details th{
+
+    width:180px;
+
+    text-align:left;
+
+    padding:6px 0;
+
+    font-weight:600;
+
+    vertical-align:top;
+
+}
+
+.erp-document-banking-details td{
+
+    padding:6px 0;
+
+}

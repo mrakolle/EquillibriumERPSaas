@@ -2,9 +2,9 @@ using EquillibriumERP.Sales.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace EquillibriumERP.Sales.Persistence.Configurations;
+namespace EquillibriumERP.Sales.Infrastructure.Persistence.Configurations;
 
-public class EstimateSequenceConfiguration : IEntityTypeConfiguration<EstimateSequence>
+public sealed class EstimateSequenceConfiguration : IEntityTypeConfiguration<EstimateSequence>
 {
     public void Configure(EntityTypeBuilder<EstimateSequence> builder)
     {
@@ -12,7 +12,7 @@ public class EstimateSequenceConfiguration : IEntityTypeConfiguration<EstimateSe
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.NextNumber)
-            .IsRequired();
+        builder.HasIndex(x => x.Year)
+            .IsUnique();
     }
 }

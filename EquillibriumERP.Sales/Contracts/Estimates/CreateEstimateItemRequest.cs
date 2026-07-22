@@ -1,5 +1,9 @@
-namespace EquillibriumERP.Sales.Contracts.Estimates;
+namespace EquillibriumERP.Sales.Contracts;
+
 public record CreateEstimateItemRequest(
     Guid ProductId,
-    decimal Quantity
+    decimal Quantity,
+    decimal UnitPrice,
+    decimal DiscountPercent,
+    decimal TaxRate
 );

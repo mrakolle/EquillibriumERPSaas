@@ -1,0 +1,37 @@
+.materials-table th:nth-child(1),
+.materials-table td:nth-child(1) {
+    width: 60%;
+}
+
+.materials-table th:nth-child(2),
+.materials-table td:nth-child(2) {
+    width: 20%;
+    text-align: right;
+}
+
+.materials-table th:nth-child(3),
+.materials-table td:nth-child(3) {
+    width: 20%;
+}
+
+/* Header alignment */
+
+.materials-table thead th:first-child,
+.materials-table tbody td:first-child{
+
+    text-align:left;
+
+}
+
+.materials-table thead th:not(:first-child),
+.materials-table tbody td:not(:first-child){
+
+    text-align:center;
+
+}
+
+.materials-table thead th:not(:first-child){
+
+    text-align:center;
+
+}

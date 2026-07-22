@@ -26,7 +26,6 @@ public sealed class OnboardingModule : IModule
         services.AddDbContext<OnboardingDbContext>(options =>
             options.UseNpgsql(config.GetConnectionString("TenantDatabase")));
 
-        services.AddScoped<ITenantOnboardingService, TenantOnboardingService>();
     }
 
     public void RegisterModel(ModelBuilder modelBuilder) { }

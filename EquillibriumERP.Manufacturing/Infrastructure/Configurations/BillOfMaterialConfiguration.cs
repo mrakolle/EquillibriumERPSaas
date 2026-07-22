@@ -17,9 +17,9 @@ public class BillOfMaterialConfiguration : IEntityTypeConfiguration<BillOfMateri
             .IsRequired()
             .HasMaxLength(50);
 
-        builder.Property(x => x.Name)
+        /*builder.Property(x => x.Name)
             .IsRequired()
-            .HasMaxLength(200);
+            .HasMaxLength(200);*/
 
         builder.Property(x => x.Description)
             .HasColumnType("text");

@@ -1,0 +1,121 @@
+.erp-card{
+
+    background:var(--erp-surface);
+
+    border:1px solid var(--erp-border);
+
+    border-radius:16px;
+
+    overflow:hidden;
+
+    margin-bottom:20px;
+
+    box-shadow:
+        0 4px 10px rgba(15,23,42,.04),
+        0 12px 28px rgba(15,23,42,.08);
+
+    transition:
+        transform .15s ease,
+        box-shadow .15s ease;
+
+}
+
+.erp-card:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 8px 18px rgba(15,23,42,.06),
+        0 16px 36px rgba(15,23,42,.10);
+
+}
+
+.erp-card-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:14px 18px;
+
+    background:#fff;
+
+    border-bottom:1px solid var(--erp-border);
+
+    position:relative;
+
+}
+
+.erp-card-header::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    bottom:0;
+
+    width:4px;
+
+    background:var(--erp-primary);
+
+}
+
+.erp-card-title{
+
+    margin-left:10px;
+
+    font-size:1rem;
+
+    font-weight:700;
+
+    color:var(--erp-text);
+
+}
+
+.erp-card-subtitle{
+
+    margin-left:10px;
+
+    margin-top:2px;
+
+    font-size:.82rem;
+
+    color:var(--erp-text-light);
+
+}
+
+.erp-card-body{
+
+    padding:18px;
+
+}
+
+/* ==========================================================
+   SIZES
+========================================================== */
+
+.erp-button-small{
+
+    min-width:auto;
+
+    height:36px;
+
+    padding:0 14px;
+
+    font-size:.88rem;
+
+    gap:6px;
+
+}
+
+.erp-button-normal{
+
+    min-width:120px;
+
+}

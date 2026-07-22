@@ -1,0 +1,276 @@
+.onboarding-page {
+
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 60px;
+
+    background: #F8FAFC;
+}
+
+.onboarding-card {
+
+    width: 100%;
+    max-width: 900px;
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 48px;
+
+    box-shadow: 0 12px 40px rgba(0,0,0,.08);
+}
+
+.onboarding-card h1 {
+
+    color: #0B3C5D;
+
+    margin-bottom: 16px;
+}
+
+.onboarding-card p {
+
+    color: #64748B;
+
+    margin-bottom: 40px;
+}
+
+.onboarding-steps {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 48px;
+}
+
+.step {
+
+    flex: 1;
+
+    margin-right: 12px;
+
+    text-align: center;
+
+    padding: 14px;
+
+    border-radius: 8px;
+
+    background: #E5E7EB;
+
+    font-weight: 600;
+}
+
+.step:last-child {
+
+    margin-right: 0;
+}
+
+.step.active {
+
+    background: #22C55E;
+
+    color: white;
+}
+
+.onboarding-content {
+
+    min-height: 300px;
+
+    border: 2px dashed #CBD5E1;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #64748B;
+}
+.form-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(2,1fr);
+
+    gap: 24px;
+}
+
+.form-group {
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+.form-group label {
+
+    margin-bottom: 8px;
+
+    font-weight: 600;
+
+    color: #0B3C5D;
+}
+
+.form-group input,
+.form-group select {
+
+    padding: 14px;
+
+    border: 1px solid #CBD5E1;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+}
+
+.full-width {
+
+    grid-column: 1 / -1;
+}
+
+.actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    margin-top: 40px;
+}
+
+.next-button {
+
+    padding: 14px 36px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #22C55E;
+
+    color: white;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+.back-button {
+
+    padding: 14px 36px;
+
+    border: 1px solid #CBD5E1;
+
+    border-radius: 8px;
+
+    background: white;
+
+    color: #0B3C5D;
+
+    cursor: pointer;
+
+    font-weight: 600;
+}
+
+.actions {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-top: 40px;
+}
+.subscription-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(2,1fr);
+
+    gap: 32px;
+}
+
+.plan-card {
+
+    padding: 32px;
+
+    border: 2px solid #CBD5E1;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.plan-card:hover {
+
+    transform: translateY(-4px);
+}
+
+.plan-card.selected {
+
+    border-color: #22C55E;
+
+    background: #F0FDF4;
+}
+
+.plan-card h2 {
+
+    margin: 16px 0;
+}
+
+.plan-card ul {
+
+    margin-top: 20px;
+
+    padding-left: 20px;
+
+    line-height: 2;
+}
+.provision-summary {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 24px;
+}
+
+.summary-card {
+
+    border: 1px solid #CBD5E1;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+}
+
+.summary-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    padding: 18px 24px;
+
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.summary-row:last-child {
+
+    border-bottom: none;
+}
+
+.provision-note {
+
+    color: #64748B;
+
+    line-height: 1.8;
+}

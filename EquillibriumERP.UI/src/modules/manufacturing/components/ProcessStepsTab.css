@@ -1,0 +1,97 @@
+.process-steps-table{
+
+    table-layout:fixed;
+
+}
+
+.process-steps-table th:nth-child(1),
+.process-steps-table td:nth-child(1){
+
+    width:60px;
+    text-align:center;
+
+}
+
+.process-steps-table th:nth-child(2),
+.process-steps-table td:nth-child(2){
+
+    width:170px;
+
+}
+
+.process-steps-table th:nth-child(3),
+.process-steps-table td:nth-child(3){
+
+    width:auto;
+
+}
+
+.process-steps-table th:nth-child(4),
+.process-steps-table td:nth-child(4){
+
+    width:110px;
+
+}
+
+.process-steps-table th:nth-child(5),
+.process-steps-table td:nth-child(5){
+
+    width:340px;
+
+}
+
+.process-steps-table th:nth-child(6),
+.process-steps-table td:nth-child(6){
+
+    width:90px;
+    text-align:center;
+
+}
+
+.process-steps-table th:nth-child(7),
+.process-steps-table td:nth-child(7){
+
+    width:60px;
+    text-align:center;
+
+}
+
+.process-steps-table td{
+
+    vertical-align:middle;
+
+}
+
+.process-steps-table textarea{
+
+    min-height:60px;
+
+}
+
+.process-steps-table .erp-icon-button{
+
+    margin:0 auto;
+
+}
+
+/* Header & data alignment */
+
+.process-steps-table thead th:first-child,
+.process-steps-table tbody td:first-child{
+
+    text-align:left;
+
+}
+
+.process-steps-table thead th:not(:first-child),
+.process-steps-table tbody td:not(:first-child){
+
+    text-align:center;
+
+}
+
+.process-steps-table thead th:not(:first-child){
+
+    text-align:center;
+
+}

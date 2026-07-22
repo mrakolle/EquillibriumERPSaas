@@ -1,0 +1,9 @@
+export default function Sales() {
+
+    return (
+        <h1>
+            Sales Module
+        </h1>
+    );
+
+}

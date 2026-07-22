@@ -1,0 +1,31 @@
+.erp-document-viewer{
+
+    display:block;
+
+}
+
+.erp-document-header{
+
+    margin-bottom:24px;
+
+    padding-bottom:16px;
+
+    border-bottom:2px solid var(--erp-border);
+
+}
+
+.erp-document-body{
+
+    margin:24px 0;
+
+}
+
+.erp-document-footer{
+
+    margin-top:24px;
+
+    padding-top:16px;
+
+    border-top:2px solid var(--erp-border);
+
+}

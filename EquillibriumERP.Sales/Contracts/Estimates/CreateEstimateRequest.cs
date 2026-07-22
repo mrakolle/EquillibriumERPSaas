@@ -1,10 +1,9 @@
-namespace EquillibriumERP.Sales.Contracts.Estimates;
+namespace EquillibriumERP.Sales.Contracts;
 
 public record CreateEstimateRequest(
     Guid CustomerId,
-    string ReferenceNumber,
-    DateTime ExpiryDateUtc,
+    string? Reference,
+    DateTime? ExpiryDateUtc,
     string? Notes,
-    List<CreateEstimateItemRequest> Items
+    IReadOnlyList<CreateEstimateItemRequest> Items
 );
-

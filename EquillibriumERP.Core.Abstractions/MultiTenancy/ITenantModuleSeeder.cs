@@ -1,6 +1,12 @@
+namespace EquillibriumERP.Core.Abstractions.MultiTenancy;
+
 public interface ITenantModuleSeeder
 {
     int Order { get; }
 
-    Task SeedAsync(CancellationToken ct = default);
+    string Name { get; }
+
+    Task SeedAsync(
+        string? schema = null,
+        CancellationToken ct = default);
 }

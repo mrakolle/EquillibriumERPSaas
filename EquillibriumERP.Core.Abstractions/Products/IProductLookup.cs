@@ -1,3 +1,4 @@
+
 namespace EquillibriumERP.Core.Abstractions.Products;
 
 public interface IProductLookup

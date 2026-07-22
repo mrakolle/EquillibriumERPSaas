@@ -18,6 +18,7 @@ public class ProductsDbContext : DbContext
     }
 
     public DbSet<Product> Products => Set<Product>();
+    public DbSet<ProductCategory> ProductCategories { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

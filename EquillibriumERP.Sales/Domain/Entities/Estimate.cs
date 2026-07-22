@@ -6,114 +6,35 @@ public class Estimate
 {
     public Guid Id { get; set; }
 
-    public Guid CustomerId { get; set; }   
+    public string QuoteNumber { get;  set; } = string.Empty;
+    public string? Reference { get; set; }
 
-    public string ReferenceNumber { get; set; } = null!;
+    public Guid CustomerId { get; set; }
 
-    public DateTime EstimateDateUtc { get; set; }
+    // Snapshot
+    public string CustomerName { get; set; } = string.Empty;
 
     public EstimateStatus Status { get; set; }
 
-    public DateTime? ExpiryDateUtc { get; set; }  // optional but needed for InvoiceFactory safety
+    public DateTime EstimateDateUtc { get; set; }
+
+    public DateTime? ExpiryDateUtc { get; set; }
+
+    public string? Notes { get; set; }
+
+    // Totals
+    public decimal Subtotal { get; set; }
+
+    public decimal DiscountAmount { get; set; }
+
+    public decimal TaxAmount { get; set; }
+
+    public decimal TotalAmount { get; set; }
+
+    // Audit
+    public DateTime CreatedUtc { get; set; }
+
+    public DateTime ModifiedUtc { get; set; } = DateTime.UtcNow;
 
     public List<EstimateItem> Items { get; set; } = new();
 }
-
-
-
-/*using EquillibriumERP.Sales.Domain.Enums;
-
-namespace EquillibriumERP.Sales.Domain.Entities;
-
-public class Estimate
-{
-    public Guid Id { get; private set; }
-
-    public string EstimateNumber { get; private set; } = null!;
-
-    public Guid CustomerId { get; private set; }
-
-    public DateTime EstimateDateUtc { get; private set; }
-
-    public DateTime ExpiryDateUtc { get; private set; }
-
-    public EstimateStatus Status { get; private set; }
-
-    public decimal Subtotal { get; private set; }
-
-    public decimal TaxAmount { get; private set; }
-
-    public decimal TotalAmount { get; private set; }
-
-    public string Notes { get; private set; } = string.Empty;
-
-    public ICollection<EstimateItem> Items { get; private set; } = new List<EstimateItem>();
-
-    private Estimate() { }
-
-    public Estimate(
-        string estimateNumber,
-        Guid customerId,
-        DateTime estimateDateUtc,
-        DateTime expiryDateUtc,
-        string? notes = null)
-    {
-        Id = Guid.NewGuid();
-
-        EstimateNumber = estimateNumber;
-        CustomerId = customerId;
-        EstimateDateUtc = estimateDateUtc;
-        ExpiryDateUtc = expiryDateUtc;
-
-        Status = EstimateStatus.Draft;
-        Notes = notes ?? string.Empty;
-    }
-
-    public void AddItem(EstimateItem item)
-    {
-        item.AssignToEstimate(Id);
-        Items.Add(item);
-        RecalculateTotals();
-    }
-
-    public void UpdateHeader(Guid customerId, DateTime expiryDateUtc, string? notes)
-    {
-        CustomerId = customerId;
-        ExpiryDateUtc = expiryDateUtc;
-        Notes = notes ?? string.Empty;
-    }
-
-    public void ReplaceItems(List<EstimateItem> items)
-    {
-        Items.Clear();
-
-        foreach (var item in items)
-        {
-            item.AssignToEstimate(Id);
-            Items.Add(item);
-        }
-
-        RecalculateTotals();
-    }
-    public static string GenerateEstimateNumber()
-    {
-        var date = DateTime.UtcNow;
-
-        return $"EST-{date:yyyyMMdd}-{Guid.NewGuid().ToString("N")[..6].ToUpper()}";
-    }
-
-    public void MarkAsSent() => Status = EstimateStatus.Sent;
-
-    public void Approve() => Status = EstimateStatus.Approved;
-
-    public void Reject() => Status = EstimateStatus.Rejected;
-
-    public void Convert() => Status = EstimateStatus.Converted;
-
-    private void RecalculateTotals()
-    {
-        Subtotal = Items.Sum(x => x.LineSubtotal);
-        TaxAmount = Items.Sum(x => x.TaxAmount);
-        TotalAmount = Subtotal + TaxAmount;
-    }
-} */

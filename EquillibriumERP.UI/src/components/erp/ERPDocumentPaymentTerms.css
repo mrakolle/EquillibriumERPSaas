@@ -1,0 +1,43 @@
+.erp-document-payment-terms{
+
+    margin-top:24px;
+
+}
+
+.erp-document-payment-terms h3{
+
+    margin-bottom:12px;
+
+    color:var(--erp-primary);
+
+}
+
+.erp-document-payment-terms table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.erp-document-payment-terms th{
+
+    width:180px;
+
+    text-align:left;
+
+    padding:8px 12px;
+
+    background:#f3f7fb;
+
+    border:1px solid var(--erp-border);
+
+}
+
+.erp-document-payment-terms td{
+
+    padding:8px 12px;
+
+    border:1px solid var(--erp-border);
+
+}

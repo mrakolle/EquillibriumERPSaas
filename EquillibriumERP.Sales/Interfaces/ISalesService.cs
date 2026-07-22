@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using EquillibriumERP.Sales.Contracts.Estimates;
+using EquillibriumERP.Sales.Contracts;
 using EquillibriumERP.Sales.Application.Contracts.Invoices;
 using EquillibriumERP.Sales.Application.Contracts.Purchases;
 

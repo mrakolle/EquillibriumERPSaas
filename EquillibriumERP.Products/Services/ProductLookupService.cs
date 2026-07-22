@@ -24,16 +24,28 @@ public class ProductLookupService : IProductLookup
         CancellationToken cancellationToken = default)
     {
         await _tenantContextualizer.SetTenantContextAsync(_db, cancellationToken);
-        return await _db.Products
-        .Where(x => x.Id == productId)
-        .Select(x => new ProductLookupResult
+
+        var entity = await _db.Products
+            .FirstOrDefaultAsync(x => x.Id == productId, cancellationToken);
+
+        Console.WriteLine($"Description from EF: '{entity?.Description}'");
+
+        return entity is null
+        ? null
+        : new ProductLookupResult
         {
-            Id = x.Id,
-            Code = x.ProductCode,
-            Name = x.Name,
-            SellingPrice = x.SellingPrice,
-            IsActive = x.IsActive
-        })
-        .FirstOrDefaultAsync(cancellationToken);
+            Id = entity.Id,
+            ProductCode = entity.ProductCode,
+            Name = entity.Name,
+            ProductType = entity.ProductType,
+            ProductCategoryId = entity.ProductCategoryId,
+            CasNumber = entity.CasNumber,
+            Description = entity.Description,
+            SellingPrice = entity.SellingPrice,
+            CostPrice = entity.CostPrice,
+            UnitOfMeasure = entity.UnitOfMeasure,
+            TaxRate = entity.TaxRate,
+            IsActive = entity.IsActive
+        };
     }
 }

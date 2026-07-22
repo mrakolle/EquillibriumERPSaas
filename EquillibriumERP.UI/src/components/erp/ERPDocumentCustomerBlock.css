@@ -1,0 +1,61 @@
+.erp-document-customer-block{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:50px;
+
+    margin-bottom:32px;
+
+}
+
+.erp-document-customer{
+
+    flex:1;
+
+}
+
+.erp-document-customer h3{
+
+    margin-top:0;
+
+    margin-bottom:12px;
+
+}
+
+.erp-document-information{
+
+    min-width:260px;
+
+}
+
+.erp-document-information table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.erp-document-information th{
+
+    text-align:left;
+
+    padding:6px 0;
+
+    white-space:nowrap;
+
+    font-weight:600;
+
+}
+
+.erp-document-information td{
+
+    text-align:right;
+
+    padding:6px 0;
+
+}

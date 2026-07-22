@@ -1,0 +1,64 @@
+@import "./variables.css";
+@import "./layout.css";
+
+.footer {
+    background: #0B3C5D;
+    color: #FFFFFF;
+    padding: 64px 0 32px;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+}
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.footer-logo {
+    width: 64px;
+    height: auto;
+}
+
+.footer-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.footer-text {
+    line-height: 1.8;
+    color: rgba(255,255,255,.85);
+}
+
+.footer-heading {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-links a {
+    color: rgba(255,255,255,.85);
+    transition: color .2s;
+}
+
+.footer-links a:hover {
+    color: #FFFFFF;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255,255,255,.15);
+    padding-top: 24px;
+    text-align: center;
+    color: rgba(255,255,255,.7);
+}

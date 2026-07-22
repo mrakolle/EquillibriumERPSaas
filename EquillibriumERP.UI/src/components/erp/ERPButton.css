@@ -1,0 +1,128 @@
+.erp-button{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    min-width:100px;
+
+    height:36px;
+
+    padding:0 16px;
+
+    border:1px solid transparent;
+
+    border-radius:8px;
+
+    font:inherit;
+
+    font-size:.9rem;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    user-select:none;
+
+    transition:
+        background-color .15s ease,
+        border-color .15s ease,
+        color .15s ease,
+        box-shadow .15s ease;
+
+}
+
+/* ==========================================================
+   PRIMARY
+========================================================== */
+
+.erp-button-primary{
+
+    background:var(--erp-primary);
+
+    color:#fff;
+
+}
+
+.erp-button-primary:hover:not(:disabled){
+
+    filter:brightness(.96);
+
+    box-shadow:
+        0 2px 8px rgba(37,99,235,.20);
+
+}
+
+/* ==========================================================
+   SECONDARY
+========================================================== */
+
+.erp-button-secondary{
+
+    background:#fff;
+
+    color:var(--erp-text);
+
+    border-color:var(--erp-border);
+
+}
+
+.erp-button-secondary:hover:not(:disabled){
+
+    background:#f8fafc;
+
+}
+
+/* ==========================================================
+   DANGER
+========================================================== */
+
+.erp-button-danger{
+
+    background:#dc2626;
+
+    color:#fff;
+
+}
+
+.erp-button-danger:hover:not(:disabled){
+
+    filter:brightness(.95);
+
+}
+
+/* ==========================================================
+   SUCCESS
+========================================================== */
+
+.erp-button-success{
+
+    background:#16a34a;
+
+    color:#fff;
+
+}
+
+.erp-button-success:hover:not(:disabled){
+
+    filter:brightness(.96);
+
+}
+
+/* ==========================================================
+   DISABLED
+========================================================== */
+
+.erp-button:disabled{
+
+    opacity:.55;
+
+    cursor:not-allowed;
+
+    box-shadow:none;
+
+}

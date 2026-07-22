@@ -1,0 +1,43 @@
+.bom-page-header {
+    width: 100%;
+}
+
+
+.bom-page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+
+.bom-page-divider {
+    width: 100%;
+    border-bottom: 1px solid #e2e8f0;
+    margin: 12px 0;
+}
+
+
+.bom-page-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+.erp-add-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 6px 12px;
+
+    border-radius: 5px;
+    border: none;
+
+    background: #2563eb;
+    color: white;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+}

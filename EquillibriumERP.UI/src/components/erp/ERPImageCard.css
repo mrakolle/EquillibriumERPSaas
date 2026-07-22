@@ -1,0 +1,102 @@
+.erp-image-card{
+
+    display:flex;
+
+    flex-direction:column;
+
+    background:var(--erp-surface);
+
+    border:1px solid var(--erp-border);
+
+    border-radius:16px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 4px 10px rgba(15,23,42,.04);
+
+}
+
+.erp-image-card-header{
+
+    padding:14px 18px;
+
+    font-size:.95rem;
+
+    font-weight:600;
+
+    color:var(--erp-text);
+
+    background:#fff;
+
+    border-bottom:1px solid var(--erp-border);
+
+}
+
+.erp-image-card-body{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:18px;
+
+    min-height:260px;
+
+}
+
+.erp-image-card-image{
+
+    width:180px;
+
+    height:180px;
+
+    object-fit:contain;
+
+    border:1px solid var(--erp-border);
+
+    border-radius:10px;
+
+    background:#fff;
+
+}
+
+.erp-image-placeholder {
+
+    width: 180px;
+    height: 180px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: #F3F6F9;
+    border: 1px solid #D6DEE8;
+
+    color: #8A97A8;
+
+    font-size: 72px;
+
+}
+
+.erp-image-caption{
+
+    text-align:center;
+
+    font-size:.85rem;
+
+    color:var(--erp-text-light);
+
+    max-width:180px;
+
+    line-height:1.4;
+
+}

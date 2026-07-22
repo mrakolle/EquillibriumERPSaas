@@ -26,4 +26,20 @@ public sealed class TenantContextualizer : ITenantContextualizer
             $"SET search_path TO \"{_tenantSession.Schema}\", public",
             ct);
     }
+    public async Task SetProvisioningTenantContextAsync(
+    DbContext dbContext,
+    string schema,
+    CancellationToken ct = default)
+    {
+        if (string.IsNullOrWhiteSpace(schema))
+            throw new ArgumentException(
+                "Provisioning schema cannot be null or empty.",
+                nameof(schema));
+
+        await dbContext.Database.OpenConnectionAsync(ct);
+
+        await dbContext.Database.ExecuteSqlRawAsync(
+            $"SET search_path TO \"{schema}\", public",
+            ct);
+    }
 }

@@ -1,10 +1,12 @@
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using EquillibriumERP.Core.Abstractions.MultiTenancy;
 using EquillibriumERP.Core.Onboarding.Domain;
+using EquillibriumERP.Core.Onboarding.Contracts;
 using EquillibriumERP.Core.Onboarding.Persistence;
 
 namespace EquillibriumERP.Core.Onboarding.Services;
@@ -14,21 +16,19 @@ public sealed class TenantOnboardingService : ITenantOnboardingService
     private readonly ITenantProvisioningService _provisioning;
     //private readonly ITenantAdminUserService _adminUserService;
     private readonly IEnumerable<ITenantModuleSeeder> _seeders;
-    private readonly IRawMaterialSeeder _rawMaterialSeeders;
 
     public TenantOnboardingService(
-    OnboardingDbContext db,
-    ITenantProvisioningService provisioning,
-    IEnumerable<ITenantModuleSeeder> seeders,IRawMaterialSeeder rawMaterialSeeders)
+        OnboardingDbContext db,
+        ITenantProvisioningService provisioning,
+        IEnumerable<ITenantModuleSeeder> seeders)
     {
         _db = db;
         _provisioning = provisioning;
         _seeders = seeders;
-        _rawMaterialSeeders = rawMaterialSeeders;
     }
 
-    public async Task<Guid> OnboardTenantAsync(
-    string tenantName,
+    public async Task<TenantOnboardingResult> OnboardTenantAsync(
+    CreateTenantRequest request,
     CancellationToken ct)
     {
         var tenantId = Guid.NewGuid();
@@ -38,10 +38,16 @@ public sealed class TenantOnboardingService : ITenantOnboardingService
         var tenant = new Tenant
         {
             Id = tenantId,
-            Name = tenantName,
-            Code = TenantCodeGenerator.Generate(tenantName),
+
+            Name = request.Company.CompanyName,
+
+            Code = TenantCodeGenerator.Generate(
+                request.Company.CompanyName),
+
             Schema = schema,
+
             CreatedAt = DateTime.UtcNow,
+
             IsActive = true
         };
 
@@ -60,7 +66,15 @@ public sealed class TenantOnboardingService : ITenantOnboardingService
             ct);
 
 
-        await _rawMaterialSeeders.SeedAsync(schema,ct);
-        return tenantId;
+        foreach (var seeder in _seeders.OrderBy(s => s.Order))
+        {
+            await seeder.SeedAsync(schema, ct);
+        }
+        return new TenantOnboardingResult(
+            tenant.Id,
+            tenant.Code,
+            tenant.Schema
+
+        );
     }
 }

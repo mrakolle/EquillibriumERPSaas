@@ -1,0 +1,86 @@
+.erp-company-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:40px;
+
+}
+
+.erp-company-left{
+
+    display:flex;
+
+    gap:20px;
+
+    align-items:flex-start;
+
+}
+
+.erp-company-logo{
+
+    width:90px;
+
+    height:auto;
+
+    object-fit:contain;
+
+}
+
+.erp-company-right{
+
+    text-align:right;
+
+}
+
+.erp-company-right h1{
+
+    margin:0;
+
+    font-size:32px;
+
+    color:var(--erp-primary);
+
+}
+
+.erp-company-right strong{
+
+    display:block;
+
+    margin-top:8px;
+
+    font-size:18px;
+
+}
+.erp-company-details{
+
+    border-collapse:collapse;
+
+    margin-top:12px;
+
+    font-size:0.9rem;
+
+}
+
+.erp-company-details th{
+
+    text-align:left;
+
+    padding:2px 10px 2px 0;
+
+    font-weight:600;
+
+    white-space:nowrap;
+
+}
+
+.erp-company-details td{
+
+    text-align:left;
+
+    padding:2px 0;
+
+}

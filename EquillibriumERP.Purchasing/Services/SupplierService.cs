@@ -4,10 +4,7 @@ using EquillibriumERP.Core.Abstractions.Persistence;
 using EquillibriumERP.Purchasing.Contracts;
 using EquillibriumERP.Purchasing.Interfaces;
 using EquillibriumERP.Purchasing.Domain.Entities;
-using EquillibriumERP.Purchasing.Domain.Enums;
 using EquillibriumERP.Purchasing.Infrastructure.Persistence;
-using EquillibriumERP.Core.Abstractions.Identity;
-using Microsoft.AspNetCore.Identity;
 
 namespace EquillibriumERP.Purchasing.Services;
 
@@ -20,30 +17,37 @@ public class SupplierService : ISupplierService
 
     public SupplierService(
         PurchasingDbContext db,
-        ITenantResolver tenantResolver, ITenantContextualizer tenantContextualizer, ITenantSession tenantSession)
+        ITenantResolver tenantResolver,
+        ITenantContextualizer tenantContextualizer,
+        ITenantSession tenantSession)
     {
         _db = db;
         _tenantResolver = tenantResolver;
         _tenantContextualizer = tenantContextualizer;
         _tenantSession = tenantSession;
-        
     }
 
     public async Task<SupplierDto> CreateAsync(
-    CreateSupplierRequest dto,
-    CancellationToken ct = default)
+        CreateSupplierRequest request,
+        CancellationToken ct = default)
     {
         await _tenantContextualizer.SetTenantContextAsync(_db, ct);
 
-        var supplier = new Supplier
-        {
-            SupplierCode = dto.SupplierCode,
-            Name = dto.Name,
-            ContactPerson = dto.ContactPerson,
-            Email = dto.Email,
-            PhoneNumber = dto.PhoneNumber,
-            IsActive = true
-        };
+        var nextNumber = await _db.Set<Supplier>().CountAsync(ct) + 1;
+        var supplierCode = $"SUP-{nextNumber:D6}";
+
+        var supplier = new Supplier(
+            supplierCode,
+            request.Name,
+            request.SupplierCategoryId,
+            request.RegistrationNumber,
+            request.VatNumber,
+            request.TaxNumber,
+            request.Email,
+            request.Phone,
+            request.Mobile,
+            request.Website,
+            request.PaymentTerms);
 
         _db.Set<Supplier>().Add(supplier);
 
@@ -54,65 +58,67 @@ public class SupplierService : ISupplierService
 
     public async Task<List<SupplierDto>> GetAllAsync()
     {
-        CancellationToken ct = default;
-        await _tenantContextualizer.SetTenantContextAsync(_db, ct);
-        return await _db.Set<Supplier>()
+        await _tenantContextualizer.SetTenantContextAsync(_db);
+
+        var suppliers = await _db.Set<Supplier>()
             .AsNoTracking()
-            .Select(p => Map(p))
+            .OrderBy(x => x.Name)
             .ToListAsync();
+
+        return suppliers.Select(Map).ToList();
     }
 
     public async Task<SupplierDto?> GetByIdAsync(Guid id)
     {
-        CancellationToken ct = default;
-        await _tenantContextualizer.SetTenantContextAsync(_db, ct);
+        await _tenantContextualizer.SetTenantContextAsync(_db);
 
         var supplier = await _db.Set<Supplier>()
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id);
 
-        return supplier is null
-            ? null
-            : Map(supplier);
+        return supplier is null ? null : Map(supplier);
     }
 
-    public async Task<SupplierDto?> UpdateAsync(
+   public async Task<SupplierDto?> UpdateAsync(
     Guid id,
-    UpdateSupplierRequest dto)
-    {
-        CancellationToken ct = default;
+    UpdateSupplierRequest request,
+    CancellationToken ct = default)
+{
+    await _tenantContextualizer.SetTenantContextAsync(_db, ct);
 
-        await _tenantContextualizer.SetTenantContextAsync(_db, ct);
+    var supplier = await _db.Set<Supplier>()
+        .FirstOrDefaultAsync(x => x.Id == id, ct);
 
-        var supplier = await _db.Set<Supplier>()
-            .FirstOrDefaultAsync(x => x.Id == id);
+    if (supplier is null)
+        return null;
 
-        if (supplier is null)
-            return null;
+    supplier.Update(
+        supplier.SupplierCode,
+        request.Name,
+        request.SupplierCategoryId,
+        request.RegistrationNumber,
+        request.VatNumber,
+        request.TaxNumber,
+        request.Email,
+        request.Phone,
+        request.Mobile,
+        request.Website,
+        request.PaymentTerms);
 
-        supplier.SupplierCode = dto.SupplierCode;
-        supplier.Name = dto.Name;
-        supplier.ContactPerson = dto.ContactPerson;
-        supplier.Email = dto.Email;
-        supplier.PhoneNumber = dto.PhoneNumber;
-        supplier.IsActive = dto.IsActive;
+    await _db.SaveChangesAsync(ct);
 
-        await _db.SaveChangesAsync(ct);
-
-        return Map(supplier);
-    }
+    return Map(supplier);
+}
 
     public async Task<bool> DeleteAsync(Guid id)
     {
-        CancellationToken ct = default;
-        await _tenantContextualizer.SetTenantContextAsync(_db, ct);
+        await _tenantContextualizer.SetTenantContextAsync(_db);
 
         var supplier = await _db.Set<Supplier>()
             .FirstOrDefaultAsync(x => x.Id == id);
 
         if (supplier is null)
             return false;
-        
 
         _db.Set<Supplier>().Remove(supplier);
 
@@ -120,16 +126,22 @@ public class SupplierService : ISupplierService
 
         return true;
     }
+
     private static SupplierDto Map(Supplier supplier)
     {
         return new SupplierDto(
             supplier.Id,
-            supplier.Name,
             supplier.SupplierCode,
-            supplier.ContactPerson,
+            supplier.Name,
+            supplier.SupplierCategoryId,
+            supplier.RegistrationNumber,
+            supplier.VatNumber,
+            supplier.TaxNumber,
             supplier.Email,
-            supplier.PhoneNumber,
-            supplier.IsActive
-        );
+            supplier.Phone,
+            supplier.Mobile,
+            supplier.Website,
+            supplier.PaymentTerms,
+            supplier.IsActive);
     }
 }

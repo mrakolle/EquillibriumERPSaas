@@ -92,7 +92,9 @@ public sealed class TenantAuthenticationService
         return new LoginResponse
         {
             UserId = user.Id,
-            TenantId = user.TenantId,
+            TenantId = tenant.Id,
+            TenantName = tenant.Name,
+            UserName = $"{user.FirstName} {user.LastName}".Trim(),
             AccessToken = token
         };
     }

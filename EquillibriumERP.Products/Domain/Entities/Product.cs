@@ -1,4 +1,4 @@
-using EquillibriumERP.Products.Domain.Enums;
+using EquillibriumERP.Core.Abstractions.Domain.Enums;
 
 namespace EquillibriumERP.Products.Domain.Entities;
 
@@ -12,7 +12,14 @@ public class Product
 
     public string Description { get; private set; } = string.Empty;
 
-    public Guid? ProductCategoryId { get; private set; }
+    public Guid ProductCategoryId { get; private set; }
+
+    public ProductCategory Category { get; private set; } = null!;
+    public string UnitOfMeasure { get; private set; } = string.Empty;
+
+    public decimal TaxRate { get; private set; }
+
+    public string? CasNumber { get; private set; }
 
     public ProductType ProductType { get; private set; }
 
@@ -20,12 +27,7 @@ public class Product
 
     public decimal CostPrice { get; private set; }
 
-    public bool IsActive { get; private set; }
-
-    // ❗ DB has it, so entity MUST have it for alignment
-   // public string TenantId { get; private set; } = null!;
-
-    public ProductCategory? Category { get; private set; }
+    public bool IsActive { get; private set; } = true;
 
     private Product() { }
 
@@ -35,7 +37,8 @@ public class Product
         ProductType productType,
         decimal sellingPrice,
         decimal costPrice,
-        Guid? productCategoryId = null,
+        Guid productCategoryId,
+        string? casNumber = null,
         string? description = null)
     {
         Id = Guid.NewGuid();
@@ -45,31 +48,35 @@ public class Product
         ProductType = productType;
         SellingPrice = sellingPrice;
         CostPrice = costPrice;
+
         ProductCategoryId = productCategoryId;
+
+        CasNumber = casNumber;
         Description = description ?? string.Empty;
 
         IsActive = true;
     }
+    public void Update(
+    string name,
+    string productCode,
+    ProductType productType,
+    Guid productCategoryId,
+    decimal sellingPrice,
+    decimal costPrice,
+    string? casNumber,
+    string? description)
+{
+    Name = name;
+    ProductCode = productCode;
+    ProductType = productType;
+    ProductCategoryId = productCategoryId;
+    SellingPrice = sellingPrice;
+    CostPrice = costPrice;
+    CasNumber = casNumber;
+    Description = description ?? string.Empty;
+}
 
     public void Deactivate() => IsActive = false;
 
     public void Activate() => IsActive = true;
-
-    public void Update(
-        string productCode,
-        string name,
-        ProductType productType,
-        decimal sellingPrice,
-        decimal costPrice,
-        Guid? productCategoryId,
-        string? description)
-    {
-        ProductCode = productCode;
-        Name = name;
-        ProductType = productType;
-        SellingPrice = sellingPrice;
-        CostPrice = costPrice;
-        ProductCategoryId = productCategoryId;
-        Description = description ?? string.Empty;
-    }
 }

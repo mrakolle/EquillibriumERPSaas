@@ -13,7 +13,10 @@ public interface IProductService
 
     Task<ProductDto?> GetByIdAsync(Guid id);
 
-    Task<ProductDto?> UpdateAsync(Guid id, UpdateProductRequest dto);
+    Task<ProductDto?> UpdateAsync(
+    Guid id,
+    UpdateProductRequest dto,
+    CancellationToken cancellationToken = default);
 
     Task<bool> DeleteAsync(Guid id);
 }

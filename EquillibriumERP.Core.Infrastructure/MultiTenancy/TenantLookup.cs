@@ -20,6 +20,7 @@ public sealed class TenantLookup : ITenantLookup
             {
                 Id = x.Id,
                 Code = x.Code,
+                Name = x.Name,
                 Schema = x.Schema
             })
             .FirstOrDefaultAsync(ct);

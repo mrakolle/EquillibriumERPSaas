@@ -1,4 +1,6 @@
+using System;
 using EquillibriumERP.Manufacturing.Domain.Enums;
+
 
 namespace EquillibriumERP.Manufacturing.Domain.Entities;
 
@@ -8,7 +10,7 @@ public class BOMStep
     public Guid BillOfMaterialId { get; set; }
     public int StepNumber { get; set; }
     public string Description { get; set; } = string.Empty;
-    public int DurationMinutes { get; set; }
+    public TimeSpan Duration { get; set; }
     public StepType Type { get; set; }
     
     // NEW: Material consumed by this step (optional)

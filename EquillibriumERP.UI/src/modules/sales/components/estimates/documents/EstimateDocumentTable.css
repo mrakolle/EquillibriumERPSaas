@@ -1,0 +1,55 @@
+.estimate-document-table {
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    background:white;
+
+}
+
+
+.estimate-document-table thead th {
+
+    background:#0B3C5D;
+
+    color:white;
+
+    border-bottom:2px solid #082A42;
+
+    padding:12px;
+
+    text-align:left;
+
+    font-weight:600;
+
+}
+
+
+.estimate-document-table tbody td {
+
+    border:none;
+
+    padding:12px;
+
+    vertical-align:top;
+
+}
+
+
+.estimate-document-table tbody tr {
+
+    border:none;
+
+}
+
+
+.estimate-document-table .description {
+
+    margin-top:4px;
+
+    font-size:0.9rem;
+
+    color:#666;
+
+}

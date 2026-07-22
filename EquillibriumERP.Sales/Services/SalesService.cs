@@ -1,6 +1,6 @@
 using EquillibriumERP.Core.Abstractions.MultiTenancy;
 using EquillibriumERP.Core.Abstractions.Persistence;
-using EquillibriumERP.Sales.Contracts.Estimates;
+using EquillibriumERP.Sales.Contracts;
 using EquillibriumERP.Sales.Application.Contracts.Invoices;
 using EquillibriumERP.Sales.Interfaces;
 //using EquillibriumERP.Products.;

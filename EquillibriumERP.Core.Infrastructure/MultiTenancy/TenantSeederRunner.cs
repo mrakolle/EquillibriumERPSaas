@@ -25,7 +25,9 @@ public class TenantSeederRunner
         {
             foreach (var seeder in _seeders)
             {
-                await seeder.SeedAsync(ct);
+                await seeder.SeedAsync(
+                        schema: null,
+                        ct: ct);
             }
         }, ct);
     }
